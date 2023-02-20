@@ -13,6 +13,7 @@ public interface IFantasyService
     Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId);
     Task<Manager> GetManagerById(int managerId);
     Task<LeagueData> GetLeagueById(int leagueId);
+    Task<LeagueWithStandings> GetLeagueWithStandings(int leagueId);
 }
 
 public class FantasyService : IFantasyService
@@ -76,6 +77,38 @@ public class FantasyService : IFantasyService
         var league = await _api.GetLeagueById(leagueId);
         return _mapper.Map<LeagueData>(league);
     }
+
+    public async Task<LeagueWithStandings> GetLeagueWithStandings(int leagueId)
+    {
+        var leagueData = await GetLeagueById(leagueId);
+        var managers = await GetManagersFromStandings(leagueData);
+
+        var data = new LeagueWithStandings(
+                        new League(leagueData.League.Id, leagueData.League.Name),
+                        leagueData.Standing.Results.Select(r => PopulateStandingWithManagerData(r, managers.Where(m => m.Id == r.ManagerId).FirstOrDefault())).ToList());
+
+        return data;
+    }
+
+    private async Task<List<Manager>> GetManagersFromStandings(LeagueData leagueData)
+    {
+        var managers = new List<Manager>();
+
+        foreach (var result in leagueData.Standing.Results)
+        {
+            var manager = await GetManagerById(result.ManagerId);
+            managers.Add(manager);
+        }
+
+        return managers;
+    }
+
+    private ResultWithManager PopulateStandingWithManagerData(Result result, Manager manager)
+    => new ResultWithManager(
+            manager,
+            result.GameWeekPoints,
+            result.CurrentRank,
+            result.LastRank);
 
     private static IEnumerable<Fixture> MergeFixturesWithData(Facade.Models.FantasyData gameData, IEnumerable<Facade.Models.Fixture> fixtures)
         => fixtures.Select(f =>

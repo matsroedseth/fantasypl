@@ -29,6 +29,8 @@ public class MappingProfile : Profile
         CreateMap<Api.Models.League, Dtos.LeagueDto>();
         CreateMap<Api.Models.StandingData, Dtos.StandingDataDto>();
         CreateMap<Api.Models.Result, Dtos.ResultDto>();
+        CreateMap<Api.Models.LeagueWithStandings, Dtos.LeagueWithStandingsDto>();
+        CreateMap<Api.Models.ResultWithManager, Dtos.ResultWithManagerDto>();
 
     }
 }

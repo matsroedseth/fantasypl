@@ -21,3 +21,15 @@ public record ResultDto(
     int CurrentRank,
     int LastRank
 );
+
+public record LeagueWithStandingsDto(
+    LeagueDto League,
+    List<ResultWithManagerDto> Standing
+);
+
+public record ResultWithManagerDto(
+    ManagerDto manager,
+    int GameWeekPoints,
+    int CurrentRank,
+    int LastRank
+);

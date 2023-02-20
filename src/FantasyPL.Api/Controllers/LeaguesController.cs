@@ -29,4 +29,12 @@ public class LeaguesController : ControllerBase
         var result = await _service.GetLeagueById(leagueId);
         return result != null ? Ok(_mapper.Map<LeagueDataDto>(result)) : NotFound();
     }
+
+
+    [HttpGet("{leagueId}/standings")]
+    public async Task<IActionResult> GetLeagueStandingsById(int leagueId)
+    {
+        var result = await _service.GetLeagueWithStandings(leagueId);
+        return result != null ? Ok(_mapper.Map<LeagueWithStandingsDto>(result)) : NotFound();
+    }
 }
