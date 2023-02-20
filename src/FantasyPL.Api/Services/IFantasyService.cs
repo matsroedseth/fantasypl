@@ -12,6 +12,7 @@ public interface IFantasyService
     Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayers();
     Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId);
     Task<Manager> GetManagerById(int managerId);
+    Task<LeagueData> GetLeagueById(int leagueId);
 }
 
 public class FantasyService : IFantasyService
@@ -68,6 +69,12 @@ public class FantasyService : IFantasyService
     {
         var manager = await _api.GetManagerById(managerId);
         return _mapper.Map<Manager>(manager);
+    }
+
+    public async Task<LeagueData> GetLeagueById(int leagueId)
+    {
+        var league = await _api.GetLeagueById(leagueId);
+        return _mapper.Map<LeagueData>(league);
     }
 
     private static IEnumerable<Fixture> MergeFixturesWithData(Facade.Models.FantasyData gameData, IEnumerable<Facade.Models.Fixture> fixtures)
