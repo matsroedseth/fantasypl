@@ -10,6 +10,7 @@ public interface IFantasyApiClient
     Task<IEnumerable<Fixture>> GetFixturesByGameweekNumber(int gameweek);
     Task<Manager> GetManagerById(int managerId);
     Task<LeagueData> GetLeagueById(int leagueId);
+    Task<ManagerPicksData> GetPlayersByManagerIdAndGameWeekNumber(int managerId, int gameweek);
 }
 
 public class FantasyApiClient : IFantasyApiClient
@@ -55,6 +56,12 @@ public class FantasyApiClient : IFantasyApiClient
     public async Task<LeagueData> GetLeagueById(int leagueId)
     {
         var result = await _httpService.GetAsync<LeagueData>(new Uri(new Uri(_baseUrl), $"leagues-classic/{leagueId}/standings"));
+        return result;
+    }
+
+    public async Task<ManagerPicksData> GetPlayersByManagerIdAndGameWeekNumber(int managerId, int gameweek)
+    {
+        var result = await _httpService.GetAsync<ManagerPicksData>(new Uri(new Uri(_baseUrl), $"entry/{managerId}/event/{gameweek}/picks/"));
         return result;
     }
 }

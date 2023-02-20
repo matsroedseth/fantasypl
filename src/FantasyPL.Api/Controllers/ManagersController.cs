@@ -29,4 +29,21 @@ public class ManagersController : ControllerBase
         var result = await _service.GetManagerById(managerId);
         return result != null ? Ok(_mapper.Map<ManagerDto>(result)) : NotFound();
     }
+
+    [HttpGet("{managerId}/players")]
+    public async Task<IActionResult> GetPlayersByWeekId(int managerId, [FromQuery] int gameweek)
+    {
+        if (gameweek <= 0 || gameweek > 38)
+        {
+            return BadRequest("QueryParam 'gameweek' should be in range 1-38");
+        }
+
+        var result = await _service.GetAllPlayersByManagerIdAndGameweekNumber(managerId, gameweek);
+        var response = new List<PlayerPickDto>();
+        foreach (var player in result)
+        {
+            response.Add(_mapper.Map<PlayerPickDto>(player));
+        }
+        return response.Any() ? Ok(response) : NoContent();
+    }
 }

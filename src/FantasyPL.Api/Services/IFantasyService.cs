@@ -14,6 +14,7 @@ public interface IFantasyService
     Task<Manager> GetManagerById(int managerId);
     Task<LeagueData> GetLeagueById(int leagueId);
     Task<LeagueWithStandings> GetLeagueWithStandings(int leagueId);
+    Task<IEnumerable<PlayerPick>> GetAllPlayersByManagerIdAndGameweekNumber(int teamId, int gameweek);
 }
 
 public class FantasyService : IFantasyService
@@ -71,6 +72,26 @@ public class FantasyService : IFantasyService
         var manager = await _api.GetManagerById(managerId);
         return _mapper.Map<Manager>(manager);
     }
+
+    public async Task<IEnumerable<PlayerPick>> GetAllPlayersByManagerIdAndGameweekNumber(int managerId, int gameweek)
+    {
+        var managerPicks = await _api.GetPlayersByManagerIdAndGameWeekNumber(managerId, gameweek);
+        var playerData = (await _api.GetGameData()).Players;
+
+        return managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault()));
+    }
+
+    private PlayerPick MergePlayerWithPlayerData(Facade.Models.PlayerPick pick, Facade.Models.PremierLeaguePlayer playerData)
+        => new PlayerPick(
+            playerData.Id,
+            playerData.FirstName,
+            playerData.LastName,
+            playerData.Price,
+            playerData.TeamId,
+            pick.Position,
+            pick.Multiplier,
+            pick.IsCaptain,
+            pick.IsViceCaptain);
 
     public async Task<LeagueData> GetLeagueById(int leagueId)
     {
