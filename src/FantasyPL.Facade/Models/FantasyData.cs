@@ -36,6 +36,18 @@ namespace FantasyPL.Facade.Models
 
         [JsonPropertyName("finished")]
         public bool Finished { get; set; }
+
+        [JsonPropertyName("is_previous")]
+        public bool IsPrevious { get; set; }
+
+        [JsonPropertyName("is_current")]
+        public bool IsCurrent { get; set; }
+
+        [JsonPropertyName("is_next")]
+        public bool IsNext { get; set; }
+
+        [JsonPropertyName("deadline_time")]
+        public DateTimeOffset Deadline { get; set; }
     }
 
     public class Fixture

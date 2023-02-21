@@ -28,7 +28,7 @@ public record LeagueWithStandingsDto(
 );
 
 public record ResultWithManagerDto(
-    ManagerDto manager,
+    ManagerInfoDto manager,
     int GameWeekPoints,
     int CurrentRank,
     int LastRank

@@ -7,14 +7,19 @@ namespace FantasyPL.Api.Services;
 public interface IFantasyService
 {
     Task<FantasyData> GetGameData();
-    Task<IEnumerable<Fixture>> GetAllFixtures();
-    Task<IEnumerable<Fixture>> GetFixturesByGameweekNumber(int gameweek);
-    Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayers();
-    Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId);
-    Task<Manager> GetManagerById(int managerId);
+    Task<List<Fixture>> GetAllFixtures();
+    Task<List<Fixture>> GetFixturesByGameweekNumber(int gameweek);
+    Task<List<PremierLeaguePlayer>> GetAllPlayers();
+    Task<List<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId);
+    Task<ManagerInfo> GetManagerById(int managerId);
     Task<LeagueData> GetLeagueById(int leagueId);
     Task<LeagueWithStandings> GetLeagueWithStandings(int leagueId);
-    Task<IEnumerable<PlayerPick>> GetAllPlayersByManagerIdAndGameweekNumber(int teamId, int gameweek);
+    Task<ManagerPicksData> GetManagerPicksByIdAndGameWeek(int managerId, int gameweek);
+    Task<List<PlayerPick>> GetPlayersByManagerIdAndGameweekNumber(int teamId, int gameweek);
+    Task<List<FantasyEvent>> GetAllGameWeeks();
+    Task<FantasyEvent> GetPreviousGameWeek();
+    Task<FantasyEvent> GetCurrentGameWeek();
+    Task<FantasyEvent> GetNextGameWeek();
 }
 
 public class FantasyService : IFantasyService
@@ -40,19 +45,52 @@ public class FantasyService : IFantasyService
         return _mapper.Map<FantasyData>(result);
     }
 
-    public async Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayers()
+    public async Task<List<FantasyEvent>> GetAllGameWeeks()
     {
-        var gameData = await _api.GetGameData();
-        return gameData.Players.Select(p => _mapper.Map<PremierLeaguePlayer>(p));
+        var result = await _api.GetGameData();
+        return result.Events.Select(e => _mapper.Map<FantasyEvent>(e)).ToList();
     }
 
-    public async Task<IEnumerable<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId)
+    public async Task<FantasyEvent> GetPreviousGameWeek()
     {
-        var gameData = await _api.GetGameData();
-        return gameData.Players.Where(p => p.TeamId == teamId).Select(p => _mapper.Map<PremierLeaguePlayer>(p));
+        var result = await _api.GetGameData();
+        var previousGameWeek = result.Events.Where(e => e.IsPrevious).FirstOrDefault();
+        return previousGameWeek != null
+                ? _mapper.Map<FantasyEvent>(previousGameWeek)
+                : null;
     }
 
-    public async Task<IEnumerable<Fixture>> GetAllFixtures()
+    public async Task<FantasyEvent> GetCurrentGameWeek()
+    {
+        var result = await _api.GetGameData();
+        var currentGameWeek = result.Events.Where(e => e.IsCurrent).FirstOrDefault();
+        return currentGameWeek != null
+                ? _mapper.Map<FantasyEvent>(currentGameWeek)
+                : null;
+    }
+
+    public async Task<FantasyEvent> GetNextGameWeek()
+    {
+        var result = await _api.GetGameData();
+        var nextGameWeek = result.Events.Where(e => e.IsNext).FirstOrDefault();
+        return nextGameWeek != null
+                ? _mapper.Map<FantasyEvent>(nextGameWeek)
+                : null;
+    }
+
+    public async Task<List<PremierLeaguePlayer>> GetAllPlayers()
+    {
+        var gameData = await _api.GetGameData();
+        return gameData.Players.Select(p => _mapper.Map<PremierLeaguePlayer>(p)).ToList();
+    }
+
+    public async Task<List<PremierLeaguePlayer>> GetAllPlayersByTeamId(int teamId)
+    {
+        var gameData = await _api.GetGameData();
+        return gameData.Players.Where(p => p.TeamId == teamId).Select(p => _mapper.Map<PremierLeaguePlayer>(p)).ToList();
+    }
+
+    public async Task<List<Fixture>> GetAllFixtures()
     {
         var gameData = await _api.GetGameData();
         var fixtures = await _api.GetFixtures();
@@ -60,25 +98,39 @@ public class FantasyService : IFantasyService
         return MergeFixturesWithData(gameData, fixtures);
     }
 
-    public async Task<IEnumerable<Fixture>> GetFixturesByGameweekNumber(int gameweek)
+    public async Task<List<Fixture>> GetFixturesByGameweekNumber(int gameweek)
     {
         var gameData = await _api.GetGameData();
         var fixtures = await _api.GetFixturesByGameweekNumber(gameweek);
         return MergeFixturesWithData(gameData, fixtures);
     }
 
-    public async Task<Manager> GetManagerById(int managerId)
+    public async Task<ManagerInfo> GetManagerById(int managerId)
     {
         var manager = await _api.GetManagerById(managerId);
-        return _mapper.Map<Manager>(manager);
+        return _mapper.Map<ManagerInfo>(manager);
     }
 
-    public async Task<IEnumerable<PlayerPick>> GetAllPlayersByManagerIdAndGameweekNumber(int managerId, int gameweek)
+    public async Task<ManagerPicksData> GetManagerPicksByIdAndGameWeek(int managerId, int gameweek)
     {
-        var managerPicks = await _api.GetPlayersByManagerIdAndGameWeekNumber(managerId, gameweek);
+        var managerPicks = await _api.GetManagerPicksByIdAndGameWeekNumber(managerId, gameweek);
+        var manager = await _api.GetManagerById(managerId);
         var playerData = (await _api.GetGameData()).Players;
 
-        return managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault()));
+        return new ManagerPicksData(
+            _mapper.Map<ManagerInfo>(manager),
+            _mapper.Map<Chip?>(managerPicks.ActiveChip),
+            _mapper.Map<TeamInfo>(managerPicks.TeamInfo),
+            managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault())).ToList()
+        );
+    }
+
+    public async Task<List<PlayerPick>> GetPlayersByManagerIdAndGameweekNumber(int managerId, int gameweek)
+    {
+        var managerPicks = await _api.GetManagerPicksByIdAndGameWeekNumber(managerId, gameweek);
+        var playerData = (await _api.GetGameData()).Players;
+
+        return managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault())).ToList();
     }
 
     private PlayerPick MergePlayerWithPlayerData(Facade.Models.PlayerPick pick, Facade.Models.PremierLeaguePlayer playerData)
@@ -111,35 +163,28 @@ public class FantasyService : IFantasyService
         return data;
     }
 
-    private async Task<List<Manager>> GetManagersFromStandings(LeagueData leagueData)
+    private async Task<List<ManagerInfo>> GetManagersFromStandings(LeagueData leagueData)
     {
-        var managers = new List<Manager>();
-
-        foreach (var result in leagueData.Standing.Results)
-        {
-            var manager = await GetManagerById(result.ManagerId);
-            managers.Add(manager);
-        }
-
-        return managers;
+        var managers = await Task.WhenAll(leagueData.Standing.Results.Select(result => _api.GetManagerById(result.ManagerId)));
+        return managers.Select(m => _mapper.Map<ManagerInfo>(m)).ToList();
     }
 
-    private ResultWithManager PopulateStandingWithManagerData(Result result, Manager manager)
+    private ResultWithManager PopulateStandingWithManagerData(Result result, ManagerInfo manager)
     => new ResultWithManager(
             manager,
             result.GameWeekPoints,
             result.CurrentRank,
             result.LastRank);
 
-    private static IEnumerable<Fixture> MergeFixturesWithData(Facade.Models.FantasyData gameData, IEnumerable<Facade.Models.Fixture> fixtures)
+    private static List<Fixture> MergeFixturesWithData(Facade.Models.FantasyData gameData, IEnumerable<Facade.Models.Fixture> fixtures)
         => fixtures.Select(f =>
                     new Fixture(
                         Id: f.Id,
                         Code: f.Code,
                         HomeTeam: ToTeam(f.HomeTeamId, gameData),
-                        AwayTeam: ToTeam(f.AwayTeamId, gameData)));
+                        AwayTeam: ToTeam(f.AwayTeamId, gameData))).ToList();
 
-    private static PremierLeagueTeam? ToTeam(int id, Facade.Models.FantasyData gameData)
+    private static PremierLeagueTeam ToTeam(int id, Facade.Models.FantasyData gameData)
     {
         var team = gameData.Teams.Where(t => t.Id == id).FirstOrDefault();
         return team != null

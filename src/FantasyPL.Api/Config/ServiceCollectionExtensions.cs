@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHttpService, HttpService>();
         services.AddHttpClient();
         services.AddAutoMapper(c => c.AddProfile<MappingProfile>());
-
         return services;
     }
 }

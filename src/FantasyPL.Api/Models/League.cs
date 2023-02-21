@@ -29,7 +29,7 @@ public record LeagueWithStandings(
 );
 
 public record ResultWithManager(
-    Manager manager,
+    ManagerInfo manager,
     int GameWeekPoints,
     int CurrentRank,
     int LastRank

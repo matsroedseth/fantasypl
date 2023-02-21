@@ -7,16 +7,16 @@ namespace FantasyPL.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FixtureController : ControllerBase
+public class FixturesController : ControllerBase
 {
     private readonly IFantasyService _service;
     private readonly IMapper _mapper;
-    private readonly ILogger<FixtureController> _logger;
+    private readonly ILogger<FixturesController> _logger;
 
-    public FixtureController(
+    public FixturesController(
         IFantasyService service,
         IMapper mapper,
-        ILogger<FixtureController> logger)
+        ILogger<FixturesController> logger)
     {
         _service = service;
         _mapper = mapper;

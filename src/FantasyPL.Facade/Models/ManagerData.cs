@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace FantasyPL.Facade.Models;
 
-public class Manager
+public class ManagerInfo
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
