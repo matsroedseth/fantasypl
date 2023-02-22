@@ -11,6 +11,15 @@ builder.Services.AddControllers()
                     var enumConverter = new JsonStringEnumConverter();
                     opts.JsonSerializerOptions.Converters.Add(enumConverter);
                 });
+var LocalDevOrigins = "localDevOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: LocalDevOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173");
+                      });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -22,6 +31,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(LocalDevOrigins);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
