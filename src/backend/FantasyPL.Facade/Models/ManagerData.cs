@@ -26,7 +26,7 @@ public class ManagerInfo
     public int GameWeekPoints { get; set; }
 
     [JsonPropertyName("summary_event_rank")]
-    public int GameWeekRank { get; set; }
+    public int? GameWeekRank { get; set; }
 
     [JsonPropertyName("name")]
     public string TeamName { get; set; }

@@ -30,7 +30,6 @@ public class LeaguesController : ControllerBase
         return result != null ? Ok(_mapper.Map<LeagueDataDto>(result)) : NotFound();
     }
 
-
     [HttpGet("{leagueId}/standings")]
     public async Task<IActionResult> GetLeagueStandingsById(int leagueId)
     {

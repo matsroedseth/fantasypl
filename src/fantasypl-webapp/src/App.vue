@@ -1,28 +1,35 @@
-<script setup lang="ts">
-import Fantasy from './components/Fantasy.vue';
-import NavBar from './components/NavBar.vue';
-</script>
-
 <template>
-  <NavBar />
+  <NavBar :nextGameweek="nextGameWeekRef" />
   <div class="container">
     <Fantasy />
   </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup lang="ts">
+import Fantasy from './components/Fantasy.vue';
+import NavBar from './components/NavBar.vue';
+import { onMounted, ref } from 'vue'
+import FantasyApi from './services/FantasyApi';
+import ResponseData from './types/ResponseData';
+import GameWeek from './types/GameWeek';
+
+
+
+let nextGameWeekRef = ref<GameWeek>();
+
+const fetchNextGameWeek = (): void => {
+  try {
+    FantasyApi.getNextGameWeek()
+      .then((response: ResponseData) => {
+        nextGameWeekRef.value = response.data;
+      });
+  }
+  catch (error) {
+    console.error(error);
+  }
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+onMounted(() => {
+  fetchNextGameWeek()
+})
+</script>

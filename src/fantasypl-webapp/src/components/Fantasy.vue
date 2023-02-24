@@ -1,6 +1,6 @@
 <template>
     <Search @search-update="fetchLeagueInfoWithStandings" />
-    <LeagueTable :league-info="leagueInfo" :standings="standings" />
+    <LeagueTable :leagueInfo="leagueInfoRef" :standings="standingsRef" />
 </template>
   
 <script setup lang="ts">
@@ -13,17 +13,17 @@ import Standing from '../types/Standing';
 import LeagueTable from './LeagueTable.vue'
 import Search from './Search.vue';
 
-let leagueInfo = ref<LeagueInfo>();
-let standings = ref<Standing[]>();
-let manager = ref<Manager>();
+let leagueInfoRef = ref<LeagueInfo>();
+let standingsRef = ref<Standing[]>([]);
+let managerRef = ref<Manager>();
 
 const fetchLeagueInfoWithStandings = (leagueId: number): void => {
     try {
         FantasyApi.getLeagueInfoWithStandings(leagueId)
             .then((response: ResponseData) => {
                 console.log(response.data);
-                leagueInfo = response.data.league;
-                standings = response.data.standing;
+                leagueInfoRef.value = response.data.league;
+                standingsRef.value = response.data.standing;
             });
     }
     catch (error) {
@@ -36,7 +36,7 @@ const fetchManagerInfo = (managerId: number): void => {
         FantasyApi.getManager(managerId)
             .then((response: ResponseData) => {
                 console.log(response.data);
-                manager = response.data;
+                managerRef = response.data;
             });
     }
     catch (error) {

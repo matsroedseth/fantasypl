@@ -9,10 +9,10 @@
 import { ref } from 'vue';
 
 let debounceId = 0;
-let leagueId = ref<number>(0)
+let leagueId = ref<number | null>(null)
 
-const onSearch = (searchTerm: number): void => {
-    if (searchTerm > 1000) {
+const onSearch = (searchTerm: number | null): void => {
+    if (searchTerm && searchTerm > 1000) {
         clearTimeout(debounceId);
         debounceId = setTimeout(() => {
             emit('searchUpdate', searchTerm);
@@ -24,3 +24,17 @@ const emit = defineEmits<{
     (e: 'searchUpdate', id: number): void
 }>()
 </script>
+
+<style scoped>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+</style>

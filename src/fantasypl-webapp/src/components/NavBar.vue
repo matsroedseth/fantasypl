@@ -1,21 +1,30 @@
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">FPL Enhanced</span>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link active" aria-current="page" href="">Home</a>
-                    <a class="nav-link" href="">About</a>
-                </div>
-            </div>
-        </div>
+    <!-- As a heading -->
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <span class=" navbar-brand mb-0 h1">FPL Enhanced</span>
+        <span v-if="nextGameweek">
+            Deadline GW{{ nextGameweek.id }}: {{ formattedDeadline(nextGameweek.deadline) }}
+        </span>
     </nav>
 </template>
 
 
 <script setup lang="ts">
+import { toRefs } from 'vue';
+import GameWeek from '../types/GameWeek';
+import moment from 'moment'
+
+interface Props {
+    nextGameweek: GameWeek | undefined
+}
+
+const props = defineProps<Props>()
+const { nextGameweek } = toRefs(props)
+
+const formattedDeadline = (deadline: Date) => {
+    if (deadline) {
+        return moment(String(deadline)).format('Do MMM hh:mm')
+    }
+}
+
 </script>

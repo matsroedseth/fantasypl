@@ -1,6 +1,6 @@
 <template>
     <h3 v-if="leagueInfo">League name: {{ leagueInfo.name }}</h3>
-    <table v-if="leagueInfo" class="table table-striped">
+    <table v-if="standings?.length" class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">Rank</th>
@@ -22,13 +22,16 @@
 </template>
   
 <script setup lang="ts">
+import { toRefs } from 'vue';
 import LeagueInfo from '../types/LeagueInfo'
 import Standing from '../types/Standing';
 import TableRow from './TableRow.vue';
 
-type Props = {
+interface Props {
     leagueInfo: LeagueInfo | undefined,
     standings: Standing[] | undefined
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+const { leagueInfo, standings } = toRefs(props)
+
 </script>
