@@ -1,8 +1,19 @@
 import Manager from "./Manager";
+import Player from "./Player";
+import Team from "./Team";
 
 export default interface Standing {
-  manager: Manager;
+  managerInfo: Manager;
+  activeChip: Chip | null;
+  teamInfo: Team;
+  players: Player[];
   gameWeekPoints: number;
   currentRank: number;
   lastRank: number;
+}
+
+enum Chip {
+  Wildcard,
+  Freehit,
+  TC,
 }

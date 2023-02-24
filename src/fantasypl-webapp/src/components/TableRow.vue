@@ -9,11 +9,14 @@
 </template>
   
 <script setup lang="ts">
+import { toRefs } from 'vue';
 import Manager from '../types/Manager';
 type Props = {
     currentRank: number,
     manager: Manager
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+const { manager } = toRefs(props)
+
 </script>
   

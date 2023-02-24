@@ -28,8 +28,10 @@ public record LeagueWithStandingsDto(
 );
 
 public record ResultWithManagerDto(
-    ManagerInfoDto manager,
+    ManagerInfoDto ManagerInfo,
+    Chip? ActiveChip,
+    TeamInfoDto TeamInfo,
+    List<PlayerPickDto> Players,
     int GameWeekPoints,
     int CurrentRank,
-    int LastRank
-);
+    int LastRank);

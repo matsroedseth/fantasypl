@@ -3,7 +3,7 @@
     <nav class="navbar navbar-light bg-light justify-content-between">
         <span class=" navbar-brand mb-0 h1">FPL Enhanced</span>
         <span v-if="nextGameweek">
-            Deadline GW{{ nextGameweek.id }}: {{ formattedDeadline(nextGameweek.deadline) }}
+            Next deadline (GW{{ nextGameweek.id }}): {{ formattedDeadline(nextGameweek.deadline) }}
         </span>
     </nav>
 </template>

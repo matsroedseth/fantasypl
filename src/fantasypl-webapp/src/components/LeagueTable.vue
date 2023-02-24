@@ -15,8 +15,8 @@
             </tr>
         </thead>
         <tbody class="table-group-divider">
-            <TableRow v-for="(standing) in standings" :key="standing.manager.id" :current-rank="standing.currentRank"
-                :manager="standing.manager" />
+            <TableRow v-for="(standing, index) in standings" :key="index" :currentRank="standing.currentRank"
+                :manager="standing.managerInfo" />
         </tbody>
     </table>
 </template>

@@ -13,9 +13,8 @@ public record ManagerInfoDto(
     string LastName,
     int OverallPoints,
     int OverallRank,
-    int CurrentGameWeek,
     int GameWeekPoints,
-    int GameWeekRank,
+    int? GameWeekRank,
     string TeamName);
 
 public record TeamInfoDto(

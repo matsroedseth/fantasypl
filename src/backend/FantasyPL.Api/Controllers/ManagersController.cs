@@ -31,7 +31,7 @@ public class ManagersController : ControllerBase
     }
 
     [HttpGet("{managerId}/picks")]
-    public async Task<IActionResult> GetManagerePicksByGameweek(int managerId, [FromQuery] int gameweek)
+    public async Task<IActionResult> GetManagerPicksByGameweek(int managerId, [FromQuery] int gameweek)
     {
         if (gameweek <= 0 || gameweek > 38)
         {

@@ -19,9 +19,6 @@ public class ManagerInfo
     [JsonPropertyName("summary_overall_rank")]
     public int OverallRank { get; set; }
 
-    [JsonPropertyName("current_event")]
-    public int CurrentGameWeek { get; set; }
-
     [JsonPropertyName("summary_event_points")]
     public int GameWeekPoints { get; set; }
 

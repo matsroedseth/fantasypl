@@ -1,6 +1,6 @@
 <template>
     <Search @search-update="fetchLeagueInfoWithStandings" />
-    <LeagueTable :leagueInfo="leagueInfoRef" :standings="standingsRef" />
+    <LeagueTable v-if="leagueInfoRef" :leagueInfo="leagueInfoRef" :standings="standingsRef" />
 </template>
   
 <script setup lang="ts">
@@ -21,7 +21,9 @@ const fetchLeagueInfoWithStandings = (leagueId: number): void => {
     try {
         FantasyApi.getLeagueInfoWithStandings(leagueId)
             .then((response: ResponseData) => {
+                console.log("Her er vi nå:")
                 console.log(response.data);
+
                 leagueInfoRef.value = response.data.league;
                 standingsRef.value = response.data.standing;
             });

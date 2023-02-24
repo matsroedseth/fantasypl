@@ -29,8 +29,10 @@ public record LeagueWithStandings(
 );
 
 public record ResultWithManager(
-    ManagerInfo manager,
+    ManagerInfo ManagerInfo,
+    Chip? ActiveChip,
+    TeamInfo TeamInfo,
+    List<PlayerPick> Players,
     int GameWeekPoints,
     int CurrentRank,
-    int LastRank
-);
+    int LastRank);
