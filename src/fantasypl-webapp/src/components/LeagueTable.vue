@@ -1,6 +1,6 @@
 <template>
     <h3 v-if="leagueInfo">League name: {{ leagueInfo.name }}</h3>
-    <table v-if="standings?.length" class="table table-striped">
+    <table v-if="standings?.length" class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">Rank</th>
@@ -15,8 +15,8 @@
             </tr>
         </thead>
         <tbody class="table-group-divider">
-            <TableRow v-for="(standing, index) in standings" :key="index" :currentRank="standing.currentRank"
-                :manager="standing.managerInfo" />
+            <TableRow v-for="(standing) in standings" :key="standing.managerInfo.id" :currentRank="standing.currentRank"
+                :manager="standing.managerInfo" v-on:click="setActiveManager(standing.managerInfo.id)" />
         </tbody>
     </table>
 </template>
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
 import LeagueInfo from '../types/LeagueInfo'
+import Manager from '../types/Manager';
 import Standing from '../types/Standing';
 import TableRow from './TableRow.vue';
 
@@ -33,5 +34,15 @@ interface Props {
 }
 const props = defineProps<Props>();
 const { leagueInfo, standings } = toRefs(props)
+
+const setActiveManager = (manager: number | null): void => {
+    if (manager) {
+        emit('activeManagerUpdate', manager);
+    }
+};
+
+const emit = defineEmits<{
+    (e: 'activeManagerUpdate', id: number): void
+}>()
 
 </script>
