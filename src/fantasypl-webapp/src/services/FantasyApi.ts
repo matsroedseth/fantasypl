@@ -9,7 +9,7 @@ class FantasyApi {
     return http.get(`/managers/${id}`);
   }
 
-  getLeague(id: number): Promise<any> {
+  getLeagueInfoWithStandings(id: number): Promise<any> {
     return http.get(`/leagues/${id}/standings`);
   }
 

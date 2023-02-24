@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import LeagueStandings from './components/LeagueStandings.vue';
+import Fantasy from './components/Fantasy.vue';
+import NavBar from './components/NavBar.vue';
 </script>
 
 <template>
-  <h1>Welcome to Fantasy Extended</h1>
-  <LeagueStandings />
+  <NavBar />
+  <div class="container">
+    <Fantasy />
+  </div>
 </template>
 
 <style scoped>
