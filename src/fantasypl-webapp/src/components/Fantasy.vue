@@ -1,7 +1,6 @@
 <template>
     <Search @search-update="fetchLeagueInfoWithStandings" />
     <div v-if="isSearching" class="d-flex justify-content-center m-5">
-        <strong>Fetching data</strong>
         <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
     </div>
     <LeagueTable v-else :leagueInfo="leagueInfoRef" :standings="standingsRef" @active-manager-update="setActiveManager" />
@@ -12,7 +11,6 @@
 import { ref } from 'vue';
 import FantasyApi from '../services/FantasyApi';
 import LeagueInfo from '../types/LeagueInfo';
-import Manager from '../types/Manager';
 import ResponseData from '../types/ResponseData';
 import Standing from '../types/Standing';
 import LeagueTable from './LeagueTable.vue'
@@ -31,10 +29,12 @@ const fetchLeagueInfoWithStandings = (leagueId: number): void => {
             .then((response: ResponseData) => {
                 leagueInfoRef.value = response.data.league;
                 standingsRef.value = response.data.standing;
+                // setActiveManager(standingsRef.value.filter(s => s.currentRank === 1)[0].managerInfo.id)
                 isSearching.value = false;
             });
     }
     catch (error) {
+        isSearching.value = false;
         console.error(error);
     }
 }

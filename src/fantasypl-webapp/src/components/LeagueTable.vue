@@ -12,11 +12,14 @@
                 <th scope="col">
                     <div data-toggle="tooltip" data-placement="right" title="Total points">Tot</div>
                 </th>
+                <th scope="col">Captain</th>
+                <th scope="col">Chip</th>
             </tr>
         </thead>
         <tbody class="table-group-divider">
             <TableRow v-for="(standing) in standings" :key="standing.managerInfo.id" :currentRank="standing.currentRank"
-                :manager="standing.managerInfo" v-on:click="setActiveManager(standing.managerInfo.id)" />
+                :manager="standing.managerInfo" :team="standing.players" :activeChip="standing.activeChip"
+                v-on:click="setActiveManager(standing.managerInfo.id)" />
         </tbody>
     </table>
 </template>

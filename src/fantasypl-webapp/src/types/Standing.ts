@@ -12,7 +12,7 @@ export default interface Standing {
   lastRank: number;
 }
 
-enum Chip {
+export enum Chip {
   Wildcard,
   Freehit,
   TC,
