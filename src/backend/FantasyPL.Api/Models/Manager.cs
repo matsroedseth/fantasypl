@@ -4,7 +4,8 @@ public record ManagerPicksData(
     ManagerInfo ManagerInfo,
     Chip? ActiveChip,
     TeamInfo TeamInfo,
-    List<PlayerPick> Players
+    List<PlayerPick> Players,
+    List<Transfer> Transfers
 );
 
 public record ManagerInfo(
@@ -34,6 +35,11 @@ public record PlayerPick(
     int Multiplier,
     bool IsCaptain,
     bool IsViceCaptain);
+
+public record Transfer(
+    PremierLeaguePlayer TransferredIn,
+    PremierLeaguePlayer TransferredOut
+);
 
 public enum Chip
 {

@@ -113,27 +113,43 @@ public class FantasyService : IFantasyService
 
     public async Task<ManagerPicksData> GetManagerPicksByIdAndGameWeek(int managerId, int gameweek)
     {
-        var managerPicks = await _api.GetManagerPicksByIdAndGameWeekNumber(managerId, gameweek);
-        var manager = await _api.GetManagerById(managerId);
-        var playerData = (await _api.GetGameData()).Players;
+        //var live = await _api.GetLiveData(gameweek);
+        var managerPicksTask = _api.GetPicksByManagerIdAndGameWeekNumber(managerId, gameweek);
+        var managerTransfersTask = _api.GetTransfersByManagerIdAndGameWeekNumber(managerId, gameweek);
+        var managerTask = _api.GetManagerById(managerId);
+        var gameDataTask = _api.GetGameData();
+
+        await Task.WhenAll(managerPicksTask, managerTask, gameDataTask);
+
+        var managerPicks = await managerPicksTask;
+        var managerTransfers = await managerTransfersTask;
+        var manager = await managerTask;
+        var players = (await gameDataTask).Players.ToDictionary(p => p.Id);
 
         return new ManagerPicksData(
             new ManagerInfo(manager.Id, manager.FirstName, manager.LastName, manager.OverallPoints, manager.OverallRank, manager.GameWeekPoints, manager.GameWeekRank, manager.TeamName),
             _mapper.Map<Chip?>(managerPicks.ActiveChip),
             _mapper.Map<TeamInfo>(managerPicks.TeamInfo),
-            managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault())).ToList()
+            managerPicks.Players.Select(p => MergeWithPlayerData(p, players[p.Element])).ToList(),
+            managerTransfers.Select(t => MergeWithPlayerData(t, players[t.ElementIn], players[t.ElementOut])).ToList()
         );
     }
 
+    private Transfer MergeWithPlayerData(Facade.Models.Transfer transfer, Facade.Models.PremierLeaguePlayer transferredIn, Facade.Models.PremierLeaguePlayer transferredOut)
+    => new Transfer(
+        _mapper.Map<PremierLeaguePlayer>(transferredIn),
+        _mapper.Map<PremierLeaguePlayer>(transferredOut)
+    );
+
     public async Task<List<PlayerPick>> GetPlayersByManagerIdAndGameweekNumber(int managerId, int gameweek)
     {
-        var managerPicks = await _api.GetManagerPicksByIdAndGameWeekNumber(managerId, gameweek);
+        var managerPicks = await _api.GetPicksByManagerIdAndGameWeekNumber(managerId, gameweek);
         var playerData = (await _api.GetGameData()).Players;
 
-        return managerPicks.Players.Select(p => MergePlayerWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault())).ToList();
+        return managerPicks.Players.Select(p => MergeWithPlayerData(p, playerData.Where(d => d.Id == p.Element).FirstOrDefault())).ToList();
     }
 
-    private PlayerPick MergePlayerWithPlayerData(Facade.Models.PlayerPick pick, Facade.Models.PremierLeaguePlayer playerData)
+    private PlayerPick MergeWithPlayerData(Facade.Models.PlayerPick pick, Facade.Models.PremierLeaguePlayer playerData)
         => new PlayerPick(
             playerData.Id,
             playerData.FirstName,
@@ -170,18 +186,28 @@ public class FantasyService : IFantasyService
     {
         var managerIds = leagueData.Standing.Results.Select(result => result.ManagerId);
         var managers = await Task.WhenAll(managerIds.Select(managerId => _api.GetManagerById(managerId)));
+        var managerTransfers = new Dictionary<int, List<Facade.Models.Transfer>>();
         var managerPicks = new Dictionary<int, Facade.Models.ManagerPicksData>();
         foreach (var managerId in managerIds)
         {
-            var managerPick = await _api.GetManagerPicksByIdAndGameWeekNumber(managerId, gameweek);
-            managerPicks.Add(managerId, managerPick);
+            var picksTask = _api.GetPicksByManagerIdAndGameWeekNumber(managerId, gameweek);
+            var transfersTask = _api.GetTransfersByManagerIdAndGameWeekNumber(managerId, gameweek);
+            Task.WaitAll(picksTask, transfersTask);
+
+            var picks = await picksTask;
+            var transfers = await transfersTask;
+
+            managerPicks.Add(managerId, picks);
+            managerTransfers.Add(managerId, transfers);
         }
 
         return managerIds.Select(id => new ManagerPicksData(
                     _mapper.Map<ManagerInfo>(managers.Where(m => m.Id == id).FirstOrDefault()),
                     _mapper.Map<Chip?>(managerPicks[id].ActiveChip),
                     _mapper.Map<TeamInfo>(managerPicks[id].TeamInfo),
-                    managerPicks[id].Players.Select(p => MergePlayerWithPlayerData(p, playerData[p.Element])).ToList())).ToDictionary(m => m.ManagerInfo.Id);
+                    managerPicks[id].Players.Select(p => MergeWithPlayerData(p, playerData[p.Element])).ToList(),
+                    managerTransfers[id].Select(t => MergeWithPlayerData(t, playerData[t.ElementIn], playerData[t.ElementOut])).ToList()
+                    )).ToDictionary(m => m.ManagerInfo.Id);
     }
 
     private ResultWithManager PopulateStandingWithManagerData(Result result, ManagerPicksData manager)

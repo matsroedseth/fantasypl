@@ -4,7 +4,8 @@ public record ManagerPicksDataDto(
     ManagerInfoDto ManagerInfo,
     Chip? ActiveChip,
     TeamInfoDto TeamInfo,
-    List<PlayerPickDto> Players
+    List<PlayerPickDto> Players,
+    List<TransferDto> Transfers
 );
 
 public record ManagerInfoDto(
@@ -34,6 +35,11 @@ public record PlayerPickDto(
     int Multiplier,
     bool IsCaptain,
     bool IsViceCaptain);
+
+public record TransferDto(
+    PremierLeaguePlayerDto TransferredIn,
+    PremierLeaguePlayerDto TransferredOut
+);
 
 public enum Chip
 {
