@@ -12,7 +12,7 @@ public interface IFantasyApiClient
     Task<LeagueData> GetLeagueById(int leagueId);
     Task<ManagerPicksData> GetPicksByManagerIdAndGameWeekNumber(int managerId, int gameweek);
     Task<List<Transfer>> GetTransfersByManagerIdAndGameWeekNumber(int managerId, int gameweek);
-    Task<ManagerPicksData> GetManagerPicksByIdAndGameWeekNumber(int managerId, int gameweek);
+    Task<LiveStats> GetLiveData(int gameweek);
 }
 
 public class FantasyApiClient : IFantasyApiClient
@@ -77,4 +77,7 @@ public class FantasyApiClient : IFantasyApiClient
         var result = await _httpService.GetAsync<List<Transfer>>(new Uri(new Uri(_baseUrl), $"entry/{managerId}/transfers"));
         return result.Where(t => t.Event == gameweek).ToList();
     }
+
+    public async Task<LiveStats> GetLiveData(int gameweek)
+    => await _httpService.GetAsync<LiveStats>(new Uri(new Uri(_baseUrl), $"event/{gameweek}/live"));
 }
