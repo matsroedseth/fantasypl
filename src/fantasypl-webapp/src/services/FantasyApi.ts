@@ -1,3 +1,4 @@
+import LiveData from "../types/LiveData";
 import http from "./HttpService";
 
 class FantasyApi {
@@ -17,9 +18,9 @@ class FantasyApi {
     return http.get(`/gameweeks/next`);
   }
 
-  // findByTitle(title: string): Promise<any> {
-  //   return http.get(`/tutorials?title=${title}`);
-  // }
+  getLivePoints(leagueId: number): Promise<any> {
+    return http.get(`/leagues/${leagueId}/livedata`);
+  }
 }
 
 export default new FantasyApi();

@@ -17,7 +17,7 @@ import LeagueTable from './LeagueTable.vue'
 import Search from './Search.vue';
 import ManagerInfo from './ManagerInfo.vue';
 
-const leagueInfoRef = ref<LeagueInfo>();
+const leagueInfoRef = ref<LeagueInfo | null>(null);
 const standingsRef = ref<Standing[]>([]);
 let isSearching = ref(false);
 let activeStandingRef = ref<Standing | null>(null);

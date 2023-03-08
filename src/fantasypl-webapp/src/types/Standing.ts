@@ -8,6 +8,7 @@ export default interface Standing {
   teamInfo: Team;
   players: Player[];
   gameWeekPoints: number;
+  livePoints: number | null;
   currentRank: number;
   lastRank: number;
 }

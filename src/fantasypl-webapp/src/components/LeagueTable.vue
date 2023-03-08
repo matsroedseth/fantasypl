@@ -7,6 +7,9 @@
                 <th scope="col">Team</th>
                 <th scope="col">Manager</th>
                 <th scope="col">
+                    <div data-toggle="tooltip" data-placement="right" title="Live points">Live</div>
+                </th>
+                <th scope="col">
                     <div data-toggle="tooltip" data-placement="right" title="Gameweek points">GW</div>
                 </th>
                 <th scope="col">
@@ -19,24 +22,29 @@
         <tbody class="table-group-divider">
             <TableRow v-for="(standing) in standings" :key="standing.managerInfo.id" :currentRank="standing.currentRank"
                 :manager="standing.managerInfo" :team="standing.players" :activeChip="standing.activeChip"
-                v-on:click="setActiveManager(standing.managerInfo.id)" />
+                v-on:click="setActiveManager(standing.managerInfo.id)" :livePoints="standing.livePoints" />
         </tbody>
     </table>
 </template>
   
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue';
+import FantasyApi from '../services/FantasyApi';
 import LeagueInfo from '../types/LeagueInfo'
-import Manager from '../types/Manager';
+import LiveData from '../types/LiveData';
+import ResponseData from '../types/ResponseData';
 import Standing from '../types/Standing';
 import TableRow from './TableRow.vue';
 
 interface Props {
-    leagueInfo: LeagueInfo | undefined,
-    standings: Standing[] | undefined
+    leagueInfo: LeagueInfo | null,
+    standings: Standing[]
 }
 const props = defineProps<Props>();
 const { leagueInfo, standings } = toRefs(props)
+const isFetchingLivePoints = ref(false);
+const livePoints = ref<LiveData[]>()
+let intervalId: number | null = null;
 
 const setActiveManager = (manager: number | null): void => {
     if (manager) {
@@ -44,8 +52,56 @@ const setActiveManager = (manager: number | null): void => {
     }
 };
 
+const fetchLivePoints = (): void => {
+    try {
+        if (leagueInfo.value && standings.value) {
+            FantasyApi.getLivePoints(leagueInfo.value.id)
+                .then((response: ResponseData) => {
+                    var result = response.data;
+                    for (const ld of result) {
+                        const manager = standings.value.findIndex(m => m.managerInfo.id === ld.managerId);
+                        if (manager >= 0) {
+                            standings.value[manager].livePoints = ld.points;
+                        }
+                    }
+                });
+        }
+    }
+    catch (error) {
+        console.error(error);
+    }
+}
+
+const startLivePointsFetcher = (): void => {
+    if (!isFetchingLivePoints.value) {
+        isFetchingLivePoints.value = true;
+        fetchLivePoints();
+
+        intervalId = setInterval(() => {
+            fetchLivePoints();
+        }, 300000); // fetch data every 5 minutes
+    }
+}
+
+onMounted(() => {
+    // fetch data when the component is mounted
+    startLivePointsFetcher();
+
+    // set up periodic data fetching
+    intervalId = setInterval(() => {
+        fetchLivePoints();
+    }, 300000); // fetch data every 5 minutes
+});
+
+onBeforeUnmount(() => {
+    // clear the interval when the component is destroyed
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+});
+
 const emit = defineEmits<{
     (e: 'activeManagerUpdate', id: number): void
 }>()
-
 </script>
