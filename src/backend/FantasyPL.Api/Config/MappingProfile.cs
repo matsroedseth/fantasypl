@@ -44,6 +44,7 @@ public class MappingProfile : Profile
         CreateMap<Api.Models.TeamInfo, Dtos.TeamInfoDto>();
         CreateMap<Api.Models.PlayerPick, Dtos.PlayerPickDto>();
         CreateMap<Api.Models.Transfer, Dtos.TransferDto>();
+        CreateMap<Api.Models.LiveData, Dtos.LiveDataDto>();
 
     }
 

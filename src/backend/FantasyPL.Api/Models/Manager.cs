@@ -8,6 +8,11 @@ public record ManagerPicksData(
     List<Transfer> Transfers
 );
 
+public record LiveData(
+    int ManagerId,
+    int Points
+);
+
 public record ManagerInfo(
     int Id,
     string FirstName,

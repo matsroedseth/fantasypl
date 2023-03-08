@@ -14,6 +14,7 @@ public interface IFantasyService
     Task<ManagerInfo> GetManagerById(int managerId);
     Task<LeagueData> GetLeagueById(int leagueId);
     Task<LeagueWithStandings> GetLeagueWithStandings(int leagueId);
+    Task<List<LiveData>> GetLiveDataForTeams(int leagueId);
     Task<ManagerPicksData> GetManagerPicksByIdAndGameWeek(int managerId, int gameweek);
     Task<List<PlayerPick>> GetPlayersByManagerIdAndGameweekNumber(int teamId, int gameweek);
     Task<List<FantasyEvent>> GetAllGameWeeks();
@@ -180,6 +181,35 @@ public class FantasyService : IFantasyService
                                     PopulateStandingWithManagerData(r, managers[r.ManagerId])).ToList()
                                     );
         return data;
+    }
+
+    public async Task<List<LiveData>> GetLiveDataForTeams(int leagueId)
+    {
+        var currentGameWeek = await GetCurrentGameWeek();
+        var liveDataTask = _api.GetLiveData(currentGameWeek.Id);
+        var leagueDataTask = _api.GetLeagueById(leagueId);
+        Task.WaitAll(liveDataTask, leagueDataTask);
+        var liveData = (await liveDataTask).Elements.ToDictionary(p => p.Id);
+        var leagueData = await leagueDataTask;
+
+        var managerPicks = new Dictionary<int, Facade.Models.ManagerPicksData>();
+        foreach (var manager in leagueData.Standing.Results)
+        {
+            var picks = await _api.GetPicksByManagerIdAndGameWeekNumber(manager.ManagerId, currentGameWeek.Id);
+            managerPicks.Add(manager.ManagerId, picks);
+        }
+
+        return managerPicks.Select(manager =>
+        {
+            var points = manager.Value.Players.Select(p =>
+            {
+                var player = liveData[p.Element];
+                return player.Stats.TotalPoints * (p.Multiplier);
+            }).Sum();
+
+            return new LiveData(manager.Key, (int)points);
+        }).ToList();
+
     }
 
     private async Task<Dictionary<int, ManagerPicksData>> GetManagerPicksFromStandings(LeagueData leagueData, Dictionary<int, Facade.Models.PremierLeaguePlayer> playerData, int gameweek)

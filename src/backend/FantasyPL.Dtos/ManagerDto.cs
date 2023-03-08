@@ -8,6 +8,11 @@ public record ManagerPicksDataDto(
     List<TransferDto> Transfers
 );
 
+public record LiveDataDto(
+    int ManagerId,
+    int Points
+);
+
 public record ManagerInfoDto(
     int Id,
     string FirstName,

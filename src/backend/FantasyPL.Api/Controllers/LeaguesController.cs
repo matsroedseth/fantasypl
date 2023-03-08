@@ -36,4 +36,11 @@ public class LeaguesController : ControllerBase
         var result = await _service.GetLeagueWithStandings(leagueId);
         return result != null ? Ok(_mapper.Map<LeagueWithStandingsDto>(result)) : NotFound();
     }
+
+    [HttpGet("{leagueId}/livedata")]
+    public async Task<IActionResult> GetLiveDataForTeams(int leagueId)
+    {
+        var result = await _service.GetLiveDataForTeams(leagueId);
+        return result.Any() ? Ok(result.Select(data => _mapper.Map<LiveDataDto>(data))) : NoContent();
+    }
 }
