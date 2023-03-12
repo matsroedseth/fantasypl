@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="search-container">
         <input type="number" v-model="leagueId" id="league-id" @input="onSearch(leagueId)"
             placeholder="Enter your leagueId">
     </div>
@@ -36,5 +36,19 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+.search-container {
+    padding: 6px;
+    display: flex;
+    align-items: center;
+}
+
+input[type=number] {
+    padding: 6px;
+    border-radius: 4px;
+    margin-right: 10px;
+    border: none;
+    font-size: 16px;
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
     <!-- As a heading -->
-    <nav class="navbar navbar-light bg-light justify-content-between">
-        <span class=" navbar-brand mb-0 h1">FPL Enhanced</span>
+    <header>
+        <h1>FPL Enhanced</h1>
         <span v-if="nextGameweek">
             Next deadline (GW{{ nextGameweek.id }}): {{ formattedDeadline(nextGameweek.deadline) }}
         </span>
-    </nav>
+    </header>
 </template>
 
 
@@ -28,3 +28,14 @@ const formattedDeadline = (deadline: Date) => {
 }
 
 </script>
+
+<style>
+header {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+</style>

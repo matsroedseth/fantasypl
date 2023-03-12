@@ -20,13 +20,6 @@
         <thead>
           <tr>
             <th scope="col">Name</th>
-            <th scope="col">
-              <div data-toggle="tooltip" data-placement="right" title="Captain">(C)</div>
-            </th>
-            <th scope="col">
-              <div data-toggle="tooltip" data-placement="right" title="Vice captain">(VC)</div>
-            </th>
-            <th scope="col">Role</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">

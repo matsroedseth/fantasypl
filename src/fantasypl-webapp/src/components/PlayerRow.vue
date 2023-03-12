@@ -1,9 +1,7 @@
 <template>
     <tr>
-        <th scope="row">{{ player.firstName }} {{ player.lastName }}</th>
-        <td>{{ player.isCaptain ? "X" : "" }}</td>
-        <td>{{ player.isViceCaptain ? "X" : "" }}</td>
-        <td>{{ player.multiplier > 0 ? "" : "Benched" }}</td>
+        <th scope="row">{{ player.firstName }} {{ player.lastName }} {{ player.isCaptain ? "(C)" : player.isViceCaptain ?
+            "(VC)" : "" }} {{ player.multiplier > 0 ? "" : "(Benched)" }}</th>
     </tr>
 </template>
   

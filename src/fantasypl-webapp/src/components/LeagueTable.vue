@@ -84,3 +84,5 @@ const emit = defineEmits<{
     (e: 'activeManagerUpdate', id: number): void
 }>()
 </script>
+
+<style></style>
