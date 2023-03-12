@@ -16,6 +16,7 @@ import Standing from '../types/Standing';
 import LeagueTable from './LeagueTable.vue'
 import Search from './Search.vue';
 import ManagerInfo from './ManagerInfo.vue';
+import LeagueWithStandings from '../types/LeagueWithStandings';
 
 const leagueInfoRef = ref<LeagueInfo | null>(null);
 const standingsRef = ref<Standing[]>([]);
@@ -26,10 +27,9 @@ const fetchLeagueInfoWithStandings = (leagueId: number): void => {
     isSearching.value = true;
     try {
         FantasyApi.getLeagueInfoWithStandings(leagueId)
-            .then((response: ResponseData) => {
-                leagueInfoRef.value = response.data.league;
-                standingsRef.value = response.data.standing;
-                // setActiveManager(standingsRef.value.filter(s => s.currentRank === 1)[0].managerInfo.id)
+            .then((response: LeagueWithStandings) => {
+                leagueInfoRef.value = response.league;
+                standingsRef.value = response.standing;
                 isSearching.value = false;
             });
     }

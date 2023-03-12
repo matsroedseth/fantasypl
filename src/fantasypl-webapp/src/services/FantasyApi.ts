@@ -1,25 +1,26 @@
+import GameWeek from "../types/GameWeek";
+import LeagueWithStandings from "../types/LeagueWithStandings";
 import LiveData from "../types/LiveData";
-import http from "./HttpService";
+import HttpService from "./HttpService";
 
 class FantasyApi {
-  // getAll(): Promise<any> {
-  //   return http.get("/tutorials");
-  // }
+  private http: HttpService;
+  private baseURL = "https://localhost:5001/api";
 
-  getManager(id: number): Promise<any> {
-    return http.get(`/managers/${id}`);
+  constructor() {
+    this.http = new HttpService(this.baseURL);
   }
 
-  getLeagueInfoWithStandings(id: number): Promise<any> {
-    return http.get(`/leagues/${id}/standings`);
+  async getLeagueInfoWithStandings(id: number): Promise<LeagueWithStandings> {
+    return this.http.get(`/leagues/${id}/standings`);
   }
 
-  getNextGameWeek(): Promise<any> {
-    return http.get(`/gameweeks/next`);
+  async getNextGameWeek(): Promise<GameWeek> {
+    return this.http.get<GameWeek>(`/gameweeks/next`);
   }
 
-  getLivePoints(leagueId: number): Promise<any> {
-    return http.get(`/leagues/${leagueId}/livedata`);
+  async getLivePoints(leagueId: number): Promise<LiveData[]> {
+    return this.http.get<LiveData[]>(`/leagues/${leagueId}/livedata`);
   }
 }
 

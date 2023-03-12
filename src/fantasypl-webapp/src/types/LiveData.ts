@@ -1,4 +1,4 @@
-export default interface Manager {
+export default interface LiveData {
   managerId: number;
   points: number;
 }

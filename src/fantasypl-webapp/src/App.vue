@@ -20,8 +20,8 @@ let nextGameWeekRef = ref<GameWeek>();
 const fetchNextGameWeek = (): void => {
   try {
     FantasyApi.getNextGameWeek()
-      .then((response: ResponseData) => {
-        nextGameWeekRef.value = response.data;
+      .then((response: GameWeek) => {
+        nextGameWeekRef.value = response;
       });
   }
   catch (error) {
