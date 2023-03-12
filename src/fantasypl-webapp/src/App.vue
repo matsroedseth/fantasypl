@@ -10,16 +10,15 @@ import Fantasy from './components/Fantasy.vue';
 import NavBar from './components/NavBar.vue';
 import { onMounted, ref } from 'vue'
 import FantasyApi from './services/FantasyApi';
-import ResponseData from './types/ResponseData';
 import GameWeek from './types/GameWeek';
 
 
 
 let nextGameWeekRef = ref<GameWeek>();
 
-const fetchNextGameWeek = (): void => {
+const fetchNextGameWeek = async (): Promise<void> => {
   try {
-    FantasyApi.getNextGameWeek()
+    await FantasyApi.getNextGameWeek()
       .then((response: GameWeek) => {
         nextGameWeekRef.value = response;
       });

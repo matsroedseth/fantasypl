@@ -11,7 +11,6 @@
 import { ref } from 'vue';
 import FantasyApi from '../services/FantasyApi';
 import LeagueInfo from '../types/LeagueInfo';
-import ResponseData from '../types/ResponseData';
 import Standing from '../types/Standing';
 import LeagueTable from './LeagueTable.vue'
 import Search from './Search.vue';
@@ -23,10 +22,10 @@ const standingsRef = ref<Standing[]>([]);
 let isSearching = ref(false);
 let activeStandingRef = ref<Standing | null>(null);
 
-const fetchLeagueInfoWithStandings = (leagueId: number): void => {
+const fetchLeagueInfoWithStandings = async (leagueId: number): Promise<void> => {
     isSearching.value = true;
     try {
-        FantasyApi.getLeagueInfoWithStandings(leagueId)
+        await FantasyApi.getLeagueInfoWithStandings(leagueId)
             .then((response: LeagueWithStandings) => {
                 leagueInfoRef.value = response.league;
                 standingsRef.value = response.standing;

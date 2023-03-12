@@ -41,7 +41,6 @@ interface Props {
 }
 const props = defineProps<Props>();
 const { leagueInfo, standings } = toRefs(props)
-const isFetchingLivePointsRef = ref(false);
 const liveDataRef = ref<LiveData[]>([]);
 let intervalId: number | null = null;
 
@@ -51,10 +50,10 @@ const setActiveManager = (manager: number | null): void => {
     }
 };
 
-const fetchLivePoints = (): void => {
+const fetchLivePoints = async (): Promise<void> => {
     try {
         if (leagueInfo.value && standings.value) {
-            FantasyApi.getLivePoints(leagueInfo.value.id)
+            await FantasyApi.getLivePoints(leagueInfo.value.id)
                 .then((response: LiveData[]) => {
                     liveDataRef.value = response;
                 });
