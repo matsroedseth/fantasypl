@@ -7,7 +7,11 @@
                 <th scope="col">Team</th>
                 <th scope="col">Manager</th>
                 <th scope="col">
-                    <div data-toggle="tooltip" data-placement="right" title="Live points">Live</div>
+                    <span>
+                        <div data-toggle="tooltip" data-placement="right" title="Live points">Live <div
+                                v-if="!currentGameWeek?.finished" class="live-dot"></div>
+                        </div>
+                    </span>
                 </th>
                 <th scope="col">
                     <div data-toggle="tooltip" data-placement="right" title="Gameweek points">GW</div>
@@ -30,6 +34,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, toRefs } from 'vue';
 import FantasyApi from '../services/FantasyApi';
+import { GameWeek } from '../types/GameWeek';
 import LeagueInfo from '../types/LeagueInfo'
 import LiveData from '../types/LiveData';
 import Standing from '../types/Standing';
@@ -37,7 +42,8 @@ import TableRow from './TableRow.vue';
 
 interface Props {
     leagueInfo: LeagueInfo | null,
-    standings: Standing[]
+    standings: Standing[],
+    currentGameWeek: GameWeek | null
 }
 const props = defineProps<Props>();
 const { leagueInfo, standings } = toRefs(props)
@@ -85,4 +91,38 @@ const emit = defineEmits<{
 }>()
 </script>
 
-<style></style>
+<style>
+.live-dot {
+    height: .5rem;
+    position: relative;
+    width: .5rem;
+
+    border-radius: 100%;
+
+    background-color: royalBlue;
+}
+
+.live-dot::after {
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+
+    border-radius: 100%;
+
+    background-color: inherit;
+
+    animation: 4s ease-out signal infinite;
+    opacity: .5;
+}
+
+@keyframes signal {
+
+    20%,
+    100% {
+        opacity: 0;
+        transform: scale(4);
+    }
+}
+</style>

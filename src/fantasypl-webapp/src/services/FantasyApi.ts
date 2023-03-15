@@ -1,4 +1,4 @@
-import GameWeek from "../types/GameWeek";
+import { GameWeekData } from "../types/GameWeek";
 import LeagueWithStandings from "../types/LeagueWithStandings";
 import LiveData from "../types/LiveData";
 import HttpService from "./HttpService";
@@ -15,8 +15,8 @@ class FantasyApi {
     return this.http.get(`/leagues/${id}/standings`);
   }
 
-  async getNextGameWeek(): Promise<GameWeek> {
-    return this.http.get<GameWeek>(`/gameweeks/next`);
+  async getGameWeekData(): Promise<GameWeekData> {
+    return this.http.get<GameWeekData>(`/gameweeks`);
   }
 
   async getLivePoints(leagueId: number): Promise<LiveData[]> {

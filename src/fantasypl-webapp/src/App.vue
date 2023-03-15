@@ -1,7 +1,7 @@
 <template>
-  <NavBar :nextGameweek="nextGameWeekRef" />
+  <NavBar :nextGameweek="gameWeekDataRef?.next" />
   <div class="container">
-    <Fantasy />
+    <Fantasy v-if="gameWeekDataRef?.current" :currentGameWeek="gameWeekDataRef.current" />
   </div>
 </template>
 
@@ -10,17 +10,17 @@ import Fantasy from './components/Fantasy.vue';
 import NavBar from './components/NavBar.vue';
 import { onMounted, ref } from 'vue'
 import FantasyApi from './services/FantasyApi';
-import GameWeek from './types/GameWeek';
+import { GameWeekData } from './types/GameWeek';
 
 
 
-let nextGameWeekRef = ref<GameWeek>();
+let gameWeekDataRef = ref<GameWeekData>();
 
-const fetchNextGameWeek = async (): Promise<void> => {
+const fetchGameWeekData = async (): Promise<void> => {
   try {
-    await FantasyApi.getNextGameWeek()
-      .then((response: GameWeek) => {
-        nextGameWeekRef.value = response;
+    await FantasyApi.getGameWeekData()
+      .then((response: GameWeekData) => {
+        gameWeekDataRef.value = response;
       });
   }
   catch (error) {
@@ -29,6 +29,6 @@ const fetchNextGameWeek = async (): Promise<void> => {
 }
 
 onMounted(() => {
-  fetchNextGameWeek()
+  fetchGameWeekData()
 })
 </script>

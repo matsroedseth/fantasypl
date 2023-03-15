@@ -32,8 +32,8 @@ const captain = (players: Player[]): Player => {
     return players.filter(p => p.isCaptain)[0];
 }
 
-const live = (liveData: LiveData[]): number | null => {
-    return liveData.length ? liveData.filter(ld => ld.managerId == manager.value.id)[0].points : null;
+const live = (liveData: LiveData[]): string => {
+    return liveData.length ? String(liveData.filter(ld => ld.managerId == manager.value.id)[0].points) : "-";
 }
 
 </script>

@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import GameWeek from '../types/GameWeek';
+import { GameWeek } from '../types/GameWeek';
 import moment from 'moment'
 
 interface Props {
@@ -23,7 +23,8 @@ const { nextGameweek } = toRefs(props)
 
 const formattedDeadline = (deadline: Date) => {
     if (deadline) {
-        return moment(String(deadline)).format('Do MMM hh:mm')
+        console.log(deadline)
+        return moment(String(deadline)).format('Do MMM H:mm')
     }
 }
 

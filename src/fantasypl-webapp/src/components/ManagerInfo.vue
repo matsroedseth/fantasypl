@@ -1,32 +1,41 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div v-if="standing.managerInfo" class="card col-sm-1" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">Team: {{ standing.managerInfo.teamName }}</h5>
-          <p>Manager: {{ standing.managerInfo.firstName }} {{ standing.managerInfo.lastName }}</p>
-          <p>Mini league rank: {{ standing.currentRank }}</p>
-          <p>Overall rank: {{ standing.managerInfo.overallRank }}</p>
-          <p v-if="standing.activeChip">Active chip: {{ standing.activeChip }}</p>
-          <div v-if="!isWildCard(standing.activeChip)">
-            <p v-if="standing.teamInfo.transfers > 0">Transfers this GW: {{ standing.teamInfo.transfers }}</p>
-            <p v-if="standing.teamInfo.transfers > 0">Transfer cost this GW: {{ standing.teamInfo.transferCost }}</p>
+  <div v-if="standing" class="modal fade show" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true"
+    role="dialog" style="display:block">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">{{ standing.managerInfo.teamName }}</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div v-if="standing.managerInfo" class="card col-sm-1" style="width: 18rem;">
+              <div class="card-body">
+                <p>Manager: {{ standing.managerInfo.firstName }} {{ standing.managerInfo.lastName }}</p>
+                <p>Mini league rank: {{ standing.currentRank }}</p>
+                <p>Overall rank: {{ standing.managerInfo.overallRank }}</p>
+                <p v-if="standing.activeChip">Active chip: {{ standing.activeChip }}</p>
+                <div v-if="!isWildCard(standing.activeChip)">
+                  <p v-if="standing.teamInfo.transfers > 0">Transfers this GW: {{ standing.teamInfo.transfers }}</p>
+                  <p v-if="standing.teamInfo.transfers > 0">Transfer cost this GW: {{ standing.teamInfo.transferCost }}
+                  </p>
+                </div>
+                <a v-on:click="closeCard" class="btn btn-warning" data-dismiss="modal">Close</a>
+              </div>
+            </div>
+            <table v-if="standing.players?.length" class="col table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <PlayerRow v-for="(player) in standing.players" :key="player.id" :player="player"
+                  :manager="standing.managerInfo" />
+              </tbody>
+            </table>
           </div>
-          <a v-on:click="closeCard" class="btn btn-warning">Close</a>
         </div>
       </div>
-
-      <table v-if="standing.players?.length" class="col table table-bordered table-sm">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <PlayerRow v-for="(player) in standing.players" :key="player.id" :player="player"
-            :manager="standing.managerInfo" />
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
