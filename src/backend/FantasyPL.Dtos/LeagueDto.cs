@@ -24,7 +24,8 @@ public record ResultDto(
 
 public record LeagueWithStandingsDto(
     LeagueDto League,
-    List<ResultWithManagerDto> Standing
+    List<ResultWithManagerDto> Standing,
+    List<CaptaincyPickDto> CaptaincyPicks
 );
 
 public record ResultWithManagerDto(
@@ -35,3 +36,14 @@ public record ResultWithManagerDto(
     int GameWeekPoints,
     int CurrentRank,
     int LastRank);
+
+public record CaptaincyPickDto(
+    CaptainDto Player,
+    int PickedByPercentage
+);
+
+public record CaptainDto(
+    int Id,
+    string FirstName,
+    string LastName
+);

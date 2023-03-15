@@ -23,7 +23,7 @@ public class GameWeeksController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("")]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllGameWeeks()
     {
         var result = await _service.GetAllGameWeeks();
@@ -41,6 +41,13 @@ public class GameWeeksController : ControllerBase
     public async Task<IActionResult> GetCurrentGameWeek()
     {
         var result = await _service.GetCurrentGameWeek();
+        return Ok(result);
+    }
+
+    [HttpGet("")]
+    public async Task<IActionResult> GetGameWeekData()
+    {
+        var result = await _service.GetGameWeekData();
         return Ok(result);
     }
 

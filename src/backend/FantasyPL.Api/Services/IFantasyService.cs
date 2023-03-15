@@ -21,6 +21,7 @@ public interface IFantasyService
     Task<FantasyEvent> GetPreviousGameWeek();
     Task<FantasyEvent> GetCurrentGameWeek();
     Task<FantasyEvent> GetNextGameWeek();
+    Task<GameWeekData> GetGameWeekData();
 }
 
 public class FantasyService : IFantasyService
@@ -50,6 +51,19 @@ public class FantasyService : IFantasyService
     {
         var result = await _api.GetGameData();
         return result.Events.Select(e => _mapper.Map<FantasyEvent>(e)).ToList();
+    }
+
+    public async Task<GameWeekData> GetGameWeekData()
+    {
+        var result = await _api.GetGameData();
+        var previousGameWeek = result.Events.Where(e => e.IsPrevious).FirstOrDefault();
+        var currentGameWeek = result.Events.Where(e => e.IsCurrent).FirstOrDefault();
+        var nextGameWeek = result.Events.Where(e => e.IsNext).FirstOrDefault();
+
+        return new GameWeekData(
+            Previous: _mapper.Map<FantasyEvent>(previousGameWeek),
+            Current: _mapper.Map<FantasyEvent>(currentGameWeek),
+            Next: _mapper.Map<FantasyEvent>(nextGameWeek));
     }
 
     public async Task<FantasyEvent> GetPreviousGameWeek()
@@ -178,9 +192,28 @@ public class FantasyService : IFantasyService
         var data = new LeagueWithStandings(
                         new League(leagueData.League.Id, leagueData.League.Name),
                         leagueData.Standing.Results.Select(r =>
-                                    PopulateStandingWithManagerData(r, managers[r.ManagerId])).ToList()
-                                    );
+                                    PopulateStandingWithManagerData(r, managers[r.ManagerId])).ToList(),
+                        CalculateCaptaincyPicks(managers)
+                        );
         return data;
+    }
+
+    private List<CaptaincyPick> CalculateCaptaincyPicks(Dictionary<int, ManagerPicksData> managers)
+    {
+        var numberOfTeams = managers.Values.Count();
+        var captains = managers.Select(m => m.Value.Players.Where(p => p.IsCaptain).FirstOrDefault())
+                                .GroupBy(p => p.Id)
+                                .Select(g =>
+                                {
+                                    var playerPick = g.FirstOrDefault();
+                                    var percentage = Math.Round(((decimal)g.Count() / numberOfTeams) * 100);
+                                    return new CaptaincyPick(
+                                        new Captain(playerPick.Id, playerPick.FirstName, playerPick.LastName),
+                                        (int)percentage
+                                        );
+                                });
+        return captains.OrderByDescending(c => c.PickedByPercentage).ToList();
+
     }
 
     public async Task<List<LiveData>> GetLiveDataForTeams(int leagueId)

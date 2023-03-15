@@ -16,3 +16,9 @@ public record PremierLeagueTeam(int Id, string Name, string ShortName);
 public record PremierLeaguePlayer(int Id, string FirstName, string LastName, decimal Price, int TeamId);
 
 public record Fixture(int Id, int Code, PremierLeagueTeam HomeTeam, PremierLeagueTeam AwayTeam);
+
+public record GameWeekData(
+    FantasyEvent Previous,
+    FantasyEvent Current,
+    FantasyEvent Next
+);

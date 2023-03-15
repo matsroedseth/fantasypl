@@ -25,7 +25,8 @@ public record Result(
 
 public record LeagueWithStandings(
     League League,
-    List<ResultWithManager> Standing
+    List<ResultWithManager> Standing,
+    List<CaptaincyPick> CaptaincyPicks
 );
 
 public record ResultWithManager(
@@ -36,3 +37,14 @@ public record ResultWithManager(
     int GameWeekPoints,
     int CurrentRank,
     int LastRank);
+
+public record CaptaincyPick(
+    Captain Player,
+    decimal PickedByPercentage
+);
+
+public record Captain(
+    int Id,
+    string FirstName,
+    string LastName
+);
