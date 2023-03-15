@@ -29,6 +29,7 @@
                 v-on:click="setActiveManager(standing.managerInfo.id)" :livePoints="liveDataRef" />
         </tbody>
     </table>
+    <ManagerInfo v-if="activeStandingRef" :standing="activeStandingRef" @reset-active-manager="resetActiveManager" />
 </template>
   
 <script setup lang="ts">
@@ -39,6 +40,7 @@ import LeagueInfo from '../types/LeagueInfo'
 import LiveData from '../types/LiveData';
 import Standing from '../types/Standing';
 import TableRow from './TableRow.vue';
+import ManagerInfo from './ManagerInfo.vue';
 
 interface Props {
     leagueInfo: LeagueInfo | null,
@@ -48,11 +50,12 @@ interface Props {
 const props = defineProps<Props>();
 const { leagueInfo, standings } = toRefs(props)
 const liveDataRef = ref<LiveData[]>([]);
+const activeStandingRef = ref<Standing | null>(null);
 let intervalId: number | null = null;
 
-const setActiveManager = (manager: number | null): void => {
-    if (manager) {
-        emit('activeManagerUpdate', manager);
+const setActiveManager = (managerId: number | null): void => {
+    if (managerId) {
+        activeStandingRef.value = standings.value.filter(item => item.managerInfo.id === managerId)[0];
     }
 };
 
@@ -68,6 +71,10 @@ const fetchLivePoints = async (): Promise<void> => {
     catch (error) {
         console.error(error);
     }
+}
+
+const resetActiveManager = (): void => {
+    activeStandingRef.value = null;
 }
 
 onMounted(() => {
