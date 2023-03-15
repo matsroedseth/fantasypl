@@ -1,10 +1,16 @@
 <template>
     <Search @search-update="fetchLeagueInfoWithStandings" />
-    <div v-if="isSearching" class="d-flex justify-content-center m-5">
-        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+    <div class="row">
+        <div v-if="isSearching" class="d-flex justify-content-center m-5">
+            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+        </div>
+        <div v-else class="row">
+            <LeagueTable class="col" :leagueInfo="leagueInfoRef" :standings="standingsRef"
+                :currentGameWeek="currentGameWeek" />
+            <CaptaincyInfo class="col-3" v-if="captaincyPicksRef" :captaincyPicks="captaincyPicksRef" />
+        </div>
+
     </div>
-    <LeagueTable v-else :leagueInfo="leagueInfoRef" :standings="standingsRef" :currentGameWeek="currentGameWeek" />
-    <CaptaincyInfo v-if="captaincyPicksRef" :captaincyPicks="captaincyPicksRef" />
 </template>
   
 <script setup lang="ts">

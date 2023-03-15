@@ -4,11 +4,11 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">{{ standing.managerInfo.teamName }}</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Team: {{ standing.managerInfo.teamName }}</h5>
         </div>
         <div class="modal-body">
           <div class="row">
-            <div v-if="standing.managerInfo" class="card col-sm-1" style="width: 18rem;">
+            <div v-if="standing.managerInfo" class="card col" style="width: 18rem;">
               <div class="card-body">
                 <p>Manager: {{ standing.managerInfo.firstName }} {{ standing.managerInfo.lastName }}</p>
                 <p>Mini league rank: {{ standing.currentRank }}</p>
@@ -19,7 +19,6 @@
                   <p v-if="standing.teamInfo.transfers > 0">Transfer cost this GW: {{ standing.teamInfo.transferCost }}
                   </p>
                 </div>
-                <a v-on:click="closeCard" class="btn btn-warning" data-dismiss="modal">Close</a>
               </div>
             </div>
             <table v-if="standing.players?.length" class="col table table-bordered table-sm">
@@ -34,6 +33,9 @@
               </tbody>
             </table>
           </div>
+        </div>
+        <div class="modal-footer">
+          <a v-on:click="closeCard" class="btn btn-secondary" data-dismiss="modal">Close</a>
         </div>
       </div>
     </div>

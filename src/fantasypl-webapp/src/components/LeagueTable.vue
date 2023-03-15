@@ -1,35 +1,37 @@
 <template>
-    <h3 v-if="leagueInfo">League name: {{ leagueInfo.name }}</h3>
-    <table v-if="standings?.length" class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">Team</th>
-                <th scope="col">Manager</th>
-                <th scope="col">
-                    <span>
-                        <div data-toggle="tooltip" data-placement="right" title="Live points">Live <div
-                                v-if="!currentGameWeek?.finished" class="live-dot"></div>
-                        </div>
-                    </span>
-                </th>
-                <th scope="col">
-                    <div data-toggle="tooltip" data-placement="right" title="Gameweek points">GW</div>
-                </th>
-                <th scope="col">
-                    <div data-toggle="tooltip" data-placement="right" title="Total points">Tot</div>
-                </th>
-                <th scope="col">Captain</th>
-                <th scope="col">Chip</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            <TableRow v-for="(standing) in standings" :key="standing.managerInfo.id" :currentRank="standing.currentRank"
-                :manager="standing.managerInfo" :team="standing.players" :activeChip="standing.activeChip"
-                v-on:click="setActiveManager(standing.managerInfo.id)" :livePoints="liveDataRef" />
-        </tbody>
-    </table>
-    <ManagerInfo v-if="activeStandingRef" :standing="activeStandingRef" @reset-active-manager="resetActiveManager" />
+    <div>
+        <h3 v-if="leagueInfo">League name: {{ leagueInfo.name }}</h3>
+        <table v-if="standings?.length" class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Manager</th>
+                    <th scope="col">
+                        <span>
+                            <div data-toggle="tooltip" data-placement="right" title="Live points">Live
+                                <div v-if="!currentGameWeek?.finished" class="live-dot" />
+                            </div>
+                        </span>
+                    </th>
+                    <th scope="col">
+                        <div data-toggle="tooltip" data-placement="right" title="Gameweek points">GW</div>
+                    </th>
+                    <th scope="col">
+                        <div data-toggle="tooltip" data-placement="right" title="Total points">Tot</div>
+                    </th>
+                    <th scope="col">Captain</th>
+                    <th scope="col">Chip</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <TableRow v-for="(standing) in standings" :key="standing.managerInfo.id" :currentRank="standing.currentRank"
+                    :manager="standing.managerInfo" :team="standing.players" :activeChip="standing.activeChip"
+                    v-on:click="setActiveManager(standing.managerInfo.id)" :livePoints="liveDataRef" />
+            </tbody>
+        </table>
+        <ManagerInfo v-if="activeStandingRef" :standing="activeStandingRef" @reset-active-manager="resetActiveManager" />
+    </div>
 </template>
   
 <script setup lang="ts">
@@ -92,10 +94,6 @@ onBeforeUnmount(() => {
         intervalId = null;
     }
 });
-
-const emit = defineEmits<{
-    (e: 'activeManagerUpdate', id: number): void
-}>()
 </script>
 
 <style>
@@ -105,7 +103,6 @@ const emit = defineEmits<{
     width: .5rem;
 
     border-radius: 100%;
-
     background-color: royalBlue;
 }
 

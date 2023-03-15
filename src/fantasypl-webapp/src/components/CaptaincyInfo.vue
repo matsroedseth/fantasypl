@@ -1,19 +1,17 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div v-if="captaincyPicks?.length" class="card" style="width: 18rem;">
-        <table class="table table-bordered table-sm">
-          <thead>
-            Captains
-          </thead>
-          <tbody class="table-group-divider">
-            <tr v-for="(captain) in captaincyPicks">
-              <th scope="row">{{
-                captain.pickedByPercentage }}% - {{ captain.player.firstName }} {{ captain.player.lastName }}</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <div class="row">
+    <div v-if="captaincyPicks?.length" class="card" style="width: 18rem;">
+      <table class="table table-bordered table-sm">
+        <thead>
+          Captains
+        </thead>
+        <tbody class="table-group-divider">
+          <tr v-for="(captain) in captaincyPicks">
+            <th scope="row">{{
+              captain.pickedByPercentage }}% - {{ captain.player.firstName }} {{ captain.player.lastName }}</th>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>

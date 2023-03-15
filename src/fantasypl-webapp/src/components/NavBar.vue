@@ -32,7 +32,7 @@ const formattedDeadline = (deadline: Date) => {
 
 <style>
 header {
-    background-color: #333;
+    background-color: #166d38;
     color: #fff;
     display: flex;
     justify-content: space-between;
