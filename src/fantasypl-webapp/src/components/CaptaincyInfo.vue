@@ -1,18 +1,17 @@
 <template>
-  <div class="row">
-    <div v-if="captaincyPicks?.length" class="card" style="width: 18rem;">
-      <table class="table table-bordered table-sm">
-        <thead>
-          Captains
-        </thead>
-        <tbody class="table-group-divider">
-          <tr v-for="(captain) in captaincyPicks">
-            <th scope="row">{{
-              captain.pickedByPercentage }}% - {{ captain.player.firstName }} {{ captain.player.lastName }}</th>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div v-if="captaincyPicks?.length" class="card p-3" style="width: 18rem;">
+    <h4 class="card-title">
+      Captaincy picks
+    </h4>
+    <table class="invisible-table">
+      <tbody>
+        <tr v-for="(captain) in captaincyPicks">
+          <th>{{
+            captain.pickedByPercentage }}% </th>
+          <th>{{ captain.player.firstName }} {{ captain.player.lastName }}</th>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -27,3 +26,10 @@ interface Props {
 const props = defineProps<Props>()
 const { captaincyPicks } = toRefs(props)
 </script>
+
+<style>
+.invisible-table {
+  padding: 10px;
+  border: none;
+}
+</style>

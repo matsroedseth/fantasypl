@@ -36,6 +36,7 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .search-container {
@@ -48,7 +49,6 @@ input[type=number] {
     padding: 6px;
     border-radius: 4px;
     margin-right: 10px;
-    border: none;
     font-size: 16px;
 }
 </style>

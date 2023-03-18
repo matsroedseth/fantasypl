@@ -1,10 +1,10 @@
 <template>
-  <div v-if="standing" class="modal fade show" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true"
-    role="dialog" style="display:block">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+  <div v-if="standing" class="modal fade show managerinfo" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-modal="true" role="dialog" style="display:block">
+    <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Team: {{ standing.managerInfo.teamName }}</h5>
+        <div class=" modal-header">
+          <h5 class=" modal-title">Team: {{ standing.managerInfo.teamName }}</h5>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -66,3 +66,21 @@ const emit = defineEmits<{
   (e: 'resetActiveManager'): void
 }>()
 </script>
+
+<style>
+.modal-header {
+  background-color: #166d37c3;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.modal-footer {
+  color: #fff;
+  display: flex;
+  align-items: end;
+  padding: 10px 20px;
+}
+</style>

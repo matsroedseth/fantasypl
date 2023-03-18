@@ -1,8 +1,8 @@
 <template>
-    <!-- As a heading -->
     <header>
         <h1>FPL Enhanced</h1>
-        <span v-if="nextGameweek">
+        <span style="display: flex; align-items: center;" v-if="nextGameweek">
+            <Search @search-update="onSearch" />
             Next deadline (GW{{ nextGameweek.id }}): {{ formattedDeadline(nextGameweek.deadline) }}
         </span>
     </header>
@@ -13,6 +13,7 @@
 import { toRefs } from 'vue';
 import { GameWeek } from '../types/GameWeek';
 import moment from 'moment'
+import Search from './Search.vue';
 
 interface Props {
     nextGameweek: GameWeek | undefined
@@ -23,10 +24,16 @@ const { nextGameweek } = toRefs(props)
 
 const formattedDeadline = (deadline: Date) => {
     if (deadline) {
-        console.log(deadline)
         return moment(String(deadline)).format('Do MMM H:mm')
     }
 }
+const onSearch = (searchTerm: number): void => {
+    emit('searchUpdate', searchTerm);
+};
+
+const emit = defineEmits<{
+    (e: 'searchUpdate', id: number): void
+}>()
 
 </script>
 

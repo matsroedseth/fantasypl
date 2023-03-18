@@ -1,27 +1,24 @@
 <template>
     <div>
-        <h3 v-if="leagueInfo">League name: {{ leagueInfo.name }}</h3>
         <table v-if="standings?.length" class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Rank</th>
-                    <th scope="col">Team</th>
-                    <th scope="col">Manager</th>
-                    <th scope="col">
-                        <span>
-                            <div data-toggle="tooltip" data-placement="right" title="Live points">Live
-                                <div v-if="!currentGameWeek?.finished" class="live-dot" />
-                            </div>
-                        </span>
+                    <th>Rank</th>
+                    <th>Team</th>
+                    <th>Manager</th>
+                    <th>
+                        <div class="live-column" data-toggle="tooltip" data-placement="right" title="Live points">Live
+                            <div v-if="!currentGameWeek?.finished" class="live-dot"></div>
+                        </div>
                     </th>
-                    <th scope="col">
+                    <th>
                         <div data-toggle="tooltip" data-placement="right" title="Gameweek points">GW</div>
                     </th>
-                    <th scope="col">
+                    <th>
                         <div data-toggle="tooltip" data-placement="right" title="Total points">Tot</div>
                     </th>
-                    <th scope="col">Captain</th>
-                    <th scope="col">Chip</th>
+                    <th>Captain</th>
+                    <th>Chip</th>
                 </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -97,6 +94,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
+.live-column {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .live-dot {
     height: .5rem;
     position: relative;

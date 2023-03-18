@@ -1,13 +1,14 @@
 <template>
-    <Search @search-update="fetchLeagueInfoWithStandings" />
-    <div class="row">
-        <div v-if="isSearching" class="d-flex justify-content-center m-5">
-            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-        </div>
-        <div v-else class="row">
-            <LeagueTable class="col" :leagueInfo="leagueInfoRef" :standings="standingsRef"
-                :currentGameWeek="currentGameWeek" />
-            <CaptaincyInfo class="col-3" v-if="captaincyPicksRef" :captaincyPicks="captaincyPicksRef" />
+    <div>
+        <h3 v-if="leagueWithStandings.league">League name: {{ leagueWithStandings.league.name }}</h3>
+    </div>
+    <div class="container">
+        <LeagueTable class="table-a" :leagueInfo="leagueWithStandings?.league" :standings="leagueWithStandings.standing"
+            :currentGameWeek="currentGameWeek" />
+        <div class="stats">
+            <CaptaincyInfo class="element-a" :captaincyPicks="leagueWithStandings.captaincyPicks" />
+            <CaptaincyInfo class="element-b" :captaincyPicks="leagueWithStandings.captaincyPicks" />
+            <CaptaincyInfo class="element-c" :captaincyPicks="leagueWithStandings.captaincyPicks" />
         </div>
 
     </div>
@@ -15,41 +16,67 @@
   
 <script setup lang="ts">
 import { ref, toRefs } from 'vue';
-import FantasyApi from '../services/FantasyApi';
-import LeagueInfo from '../types/LeagueInfo';
-import Standing from '../types/Standing';
 import LeagueTable from './LeagueTable.vue'
-import Search from './Search.vue';
-import LeagueWithStandings, { CaptaincyPick } from '../types/LeagueWithStandings';
 import { GameWeek } from '../types/GameWeek';
 import CaptaincyInfo from './CaptaincyInfo.vue';
-
-const leagueInfoRef = ref<LeagueInfo | null>(null);
-const standingsRef = ref<Standing[]>([]);
-const captaincyPicksRef = ref<CaptaincyPick[]>([]);
-let isSearching = ref(false);
+import LeagueWithStandings, { CaptaincyPick } from '../types/LeagueWithStandings';
 
 interface Props {
     currentGameWeek: GameWeek | null
+    leagueWithStandings: LeagueWithStandings
 }
 const props = defineProps<Props>();
-const { currentGameWeek } = toRefs(props)
-
-const fetchLeagueInfoWithStandings = async (leagueId: number): Promise<void> => {
-    isSearching.value = true;
-    try {
-        await FantasyApi.getLeagueInfoWithStandings(leagueId)
-            .then((response: LeagueWithStandings) => {
-                leagueInfoRef.value = response.league;
-                standingsRef.value = response.standing;
-                captaincyPicksRef.value = response.captaincyPicks;
-                isSearching.value = false;
-            });
-    }
-    catch (error) {
-        isSearching.value = false;
-        console.error(error);
-    }
-}
+const { currentGameWeek, leagueWithStandings } = toRefs(props)
 </script>
   
+<style>
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.table-a {
+    flex-basis: 70%;
+}
+
+.stats {
+    display: flex;
+    flex-basis: 25%;
+    flex-wrap: wrap;
+}
+
+.element-a,
+.element-b,
+.element-c {
+    flex-basis: 100%;
+    border: 2rem;
+}
+
+@media only screen and (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .table-a {
+        flex-basis: 100%;
+    }
+
+    .stats {
+        flex-basis: 100%;
+        justify-content: space-between;
+    }
+
+    .element-a,
+    .element-b,
+    .element-c {
+        flex-basis: 33.33%;
+        margin: 2rem;
+    }
+}
+</style>
