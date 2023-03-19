@@ -7,32 +7,36 @@
           <h5 class=" modal-title">Team: {{ standing.managerInfo.teamName }}</h5>
         </div>
         <div class="modal-body">
-          <div class="row">
-            <div v-if="standing.managerInfo" class="card col" style="width: 18rem;">
-              <div class="card-body">
-                <p>Manager: {{ standing.managerInfo.firstName }} {{ standing.managerInfo.lastName }}</p>
-                <p>Mini league rank: {{ standing.currentRank }}</p>
-                <p>Overall rank: {{ standing.managerInfo.overallRank }}</p>
-                <p v-if="standing.activeChip">Active chip: {{ standing.activeChip }}</p>
-                <div v-if="!isWildCard(standing.activeChip)">
-                  <p v-if="standing.teamInfo.transfers > 0">Transfers this GW: {{ standing.teamInfo.transfers }}</p>
-                  <p v-if="standing.teamInfo.transfers > 0">Transfer cost this GW: {{ standing.teamInfo.transferCost }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <table v-if="standing.players?.length" class="col table table-bordered table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                <PlayerRow v-for="(player) in standing.players" :key="player.id" :player="player"
-                  :manager="standing.managerInfo" />
-              </tbody>
-            </table>
-          </div>
+          <table v-if="standing.managerInfo" class="row invisible-table">
+            <h4>Manager info</h4>
+            <tbody>
+              <tr>
+                <th>Manager:</th>
+                <th>{{ standing.managerInfo.firstName }} {{ standing.managerInfo.lastName }}</th>
+              </tr>
+              <tr>
+                <th>Mini league rank:</th>
+                <th>{{ standing.currentRank }}</th>
+              </tr>
+              <tr>
+                <th>Overall rank:</th>
+                <th>{{ standing.managerInfo.overallRank }}</th>
+              </tr>
+              <tr v-if="standing.activeChip">
+                <th>Active chip:</th>
+                <th>{{ standing.activeChip }}</th>
+              </tr>
+              <tr v-if="!isWildCard(standing.activeChip)">
+                <th>Transfers this GW:</th>
+                <th>{{ standing.teamInfo.transfers }}</th>
+              </tr>
+              <tr v-if="!isWildCard(standing.activeChip)">
+                <th>Transfer cost this GW:</th>
+                <th>{{ standing.teamInfo.transferCost }}</th>
+              </tr>
+            </tbody>
+          </table>
+          <ManagerPicks v-if="standing.players?.length" :players="standing.players" />
         </div>
         <div class="modal-footer">
           <a v-on:click="closeCard" class="btn btn-secondary" data-dismiss="modal">Close</a>
@@ -44,8 +48,9 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import Standing, { Chip } from '../types/Standing';
-import PlayerRow from './PlayerRow.vue';
+import { Chip } from '../types/Enums';
+import Standing from '../types/Standing';
+import ManagerPicks from './ManagerPicks.vue';
 
 interface Props {
   standing: Standing

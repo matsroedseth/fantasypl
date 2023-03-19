@@ -15,7 +15,7 @@
 </template>
   
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { toRefs } from 'vue';
 import LeagueTable from './LeagueTable.vue'
 import { GameWeek } from '../types/GameWeek';
 import CaptaincyInfo from './CaptaincyInfo.vue';
@@ -75,7 +75,7 @@ const { currentGameWeek, leagueWithStandings } = toRefs(props)
     .element-a,
     .element-b,
     .element-c {
-        flex-basis: 33.33%;
+        flex-basis: 25%;
         margin: 2rem;
     }
 }

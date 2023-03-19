@@ -81,7 +81,7 @@ onMounted(() => {
     // set up periodic data fetching
     intervalId = setInterval(() => {
         fetchLivePoints();
-    }, 10000); // fetch data every 5 minutes
+    }, 60000); // fetch data every 5 minutes
 });
 
 onBeforeUnmount(() => {

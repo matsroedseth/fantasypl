@@ -1,3 +1,4 @@
+import { Chip } from "./Enums";
 import Manager from "./Manager";
 import Player from "./Player";
 import Team from "./Team";
@@ -11,10 +12,4 @@ export default interface Standing {
   livePoints: number | null;
   currentRank: number;
   lastRank: number;
-}
-
-export enum Chip {
-  Wildcard,
-  Freehit,
-  TC,
 }

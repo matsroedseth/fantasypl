@@ -1,7 +1,8 @@
 <template>
     <tr>
-        <th scope="row">{{ player.firstName }} {{ player.lastName }} {{ player.isCaptain ? "(C)" : player.isViceCaptain ?
-            "(VC)" : "" }} {{ player.multiplier > 0 ? "" : "(Benched)" }}</th>
+        <th>{{ player.name }}</th>
+        <th>{{ player.isCaptain ? "(C)" : player.isViceCaptain ?
+            "(VC)" : "" }}</th>
     </tr>
 </template>
   
@@ -15,5 +16,8 @@ const props = defineProps<Props>();
 
 const { player } = toRefs(props)
 
+const isOnBench = (player: Player): boolean => {
+    return player.multiplier > 0;
+}
 </script>
-  
+<style></style>
