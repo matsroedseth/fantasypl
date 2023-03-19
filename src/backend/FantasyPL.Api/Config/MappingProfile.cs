@@ -1,4 +1,5 @@
 using AutoMapper;
+using FantasyPL.Domain.Enums;
 using FantasyPL.Facade.Models;
 
 namespace FantasyPL.Api.Config;
@@ -18,7 +19,8 @@ public class MappingProfile : Profile
         CreateMap<Facade.Models.StandingData, Api.Models.StandingData>();
         CreateMap<Facade.Models.Result, Api.Models.Result>();
 
-        CreateMap<string, Api.Models.Chip?>().ConvertUsing(val => MapChip(val));
+        CreateMap<string, Domain.Enums.Chip?>().ConvertUsing(val => MapChip(val));
+        CreateMap<int, Domain.Enums.Position>().ConvertUsing(val => MapPosition(val));
         CreateMap<Facade.Models.ManagerInfo, Api.Models.ManagerInfo>();
         CreateMap<Facade.Models.TeamInfo, Api.Models.TeamInfo>();
         CreateMap<Facade.Models.PlayerPick, Api.Models.PlayerPick>();
@@ -41,7 +43,6 @@ public class MappingProfile : Profile
         CreateMap<Api.Models.Captain, Dtos.CaptainDto>();
 
         CreateMap<Api.Models.ManagerPicksData, Dtos.ManagerPicksDataDto>();
-        CreateMap<Api.Models.Chip?, Dtos.Chip?>();
         CreateMap<Api.Models.ManagerInfo, Dtos.ManagerInfoDto>();
         CreateMap<Api.Models.TeamInfo, Dtos.TeamInfoDto>();
         CreateMap<Api.Models.PlayerPick, Dtos.PlayerPickDto>();
@@ -50,21 +51,38 @@ public class MappingProfile : Profile
 
     }
 
-    private Models.Chip? MapChip(string value)
+    private Chip? MapChip(string value)
     {
         if (string.Equals(value, "wildcard", StringComparison.InvariantCultureIgnoreCase))
         {
-            return Models.Chip.Wildcard;
+            return Chip.Wildcard;
         }
         else if (string.Equals(value, "freehit", StringComparison.InvariantCultureIgnoreCase))
         {
-            return Models.Chip.Freehit;
+            return Chip.Freehit;
         }
         else if (string.Equals(value, "3xc", StringComparison.InvariantCultureIgnoreCase))
         {
-            return Models.Chip.TC;
+            return Chip.TC;
         }
 
         return null;
+    }
+
+    private Position MapPosition(int value)
+    {
+        switch (value)
+        {
+            case 1:
+                return Position.Goalkeeper;
+            case 2:
+                return Position.Defender;
+            case 3:
+                return Position.Midfielder;
+            case 4:
+            default:
+                return Position.Attacker;
+
+        }
     }
 }

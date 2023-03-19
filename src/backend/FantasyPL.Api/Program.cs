@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddServices();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

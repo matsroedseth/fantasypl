@@ -77,10 +77,16 @@ namespace FantasyPL.Facade.Models
         [JsonPropertyName("second_name")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("web_name")]
+        public string Name { get; set; }
+
         [JsonPropertyName("now_cost")]
         public int Price { get; set; }
 
         [JsonPropertyName("team")]
         public int TeamId { get; set; }
+
+        [JsonPropertyName("element_type")]
+        public int ElementType { get; set; }
     }
 }

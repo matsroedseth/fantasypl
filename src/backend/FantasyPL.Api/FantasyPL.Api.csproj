@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FantasyPL.Facade\FantasyPL.Facade.csproj" />
     <ProjectReference Include="..\FantasyPL.Dtos\FantasyPL.Dtos.csproj" />
+    <ProjectReference Include="..\FantasyPL.Domain\FantasyPL.Domain.csproj" />
   </ItemGroup>
 
 </Project>

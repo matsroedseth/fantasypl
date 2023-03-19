@@ -1,3 +1,5 @@
+using FantasyPL.Domain.Enums;
+
 namespace FantasyPL.Api.Models;
 
 public record LeagueData(

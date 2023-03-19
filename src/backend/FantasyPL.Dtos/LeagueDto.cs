@@ -1,3 +1,5 @@
+using FantasyPL.Domain.Enums;
+
 namespace FantasyPL.Dtos;
 
 public record LeagueDataDto(

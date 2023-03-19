@@ -1,3 +1,5 @@
+using FantasyPL.Domain.Enums;
+
 namespace FantasyPL.Api.Models;
 
 public record ManagerPicksData(
@@ -34,21 +36,16 @@ public record PlayerPick(
     int Id,
     string FirstName,
     string LastName,
+    string Name,
     decimal Price,
     int TeamId,
     int Position,
     int Multiplier,
     bool IsCaptain,
-    bool IsViceCaptain);
+    bool IsViceCaptain,
+    Position ElementType);
 
 public record Transfer(
     PremierLeaguePlayer TransferredIn,
     PremierLeaguePlayer TransferredOut
 );
-
-public enum Chip
-{
-    Wildcard,
-    Freehit,
-    TC
-}

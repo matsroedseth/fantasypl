@@ -1,6 +1,7 @@
 using AutoMapper;
 using FantasyPL.Facade.Clients;
 using FantasyPL.Api.Models;
+using FantasyPL.Domain.Enums;
 
 namespace FantasyPL.Api.Services;
 
@@ -169,12 +170,14 @@ public class FantasyService : IFantasyService
             playerData.Id,
             playerData.FirstName,
             playerData.LastName,
+            playerData.Name,
             playerData.Price,
             playerData.TeamId,
             pick.Position,
             pick.Multiplier,
             pick.IsCaptain,
-            pick.IsViceCaptain);
+            pick.IsViceCaptain,
+            _mapper.Map<Position>(playerData.ElementType));
 
     public async Task<LeagueData> GetLeagueById(int leagueId)
     {

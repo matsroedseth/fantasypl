@@ -13,4 +13,4 @@ public record FantasyEventDto(
 
 public record PremierLeagueTeamDto(int Id, string Name);
 
-public record PremierLeaguePlayerDto(int Id, string FirstName, string LastName, decimal Price, int TeamId);
+public record PremierLeaguePlayerDto(int Id, string FirstName, string LastName, string Name, decimal Price, int TeamId);

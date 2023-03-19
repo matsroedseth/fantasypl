@@ -13,7 +13,7 @@ public record FantasyEvent(
 
 public record PremierLeagueTeam(int Id, string Name, string ShortName);
 
-public record PremierLeaguePlayer(int Id, string FirstName, string LastName, decimal Price, int TeamId);
+public record PremierLeaguePlayer(int Id, string FirstName, string LastName, string Name, decimal Price, int TeamId, int ElementType);
 
 public record Fixture(int Id, int Code, PremierLeagueTeam HomeTeam, PremierLeagueTeam AwayTeam);
 

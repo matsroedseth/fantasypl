@@ -1,5 +1,7 @@
 using System.Text.Json;
 using FantasyPL.Facade.Models;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace FantasyPL.Facade.Clients;
 
@@ -17,25 +19,58 @@ public interface IFantasyApiClient
 
 public class FantasyApiClient : IFantasyApiClient
 {
+    private const string GameDataCacheKey = "gameData";
+    private const string FixturesCacheKey = "fixtures";
+    private const string ManagerCacheBaseKey = "managerPicks";
     private readonly IHttpService _httpService;
+    private readonly IMemoryCache _cache;
+    private readonly ILogger<FantasyApiClient> _logger;
     private readonly string _baseUrl;
+    private MemoryCacheEntryOptions _cacheEntryOptions;
 
-    public FantasyApiClient(IHttpService httpService)
+    public FantasyApiClient(
+        IHttpService httpService,
+        IMemoryCache cache,
+        ILogger<FantasyApiClient> logger)
     {
         _httpService = httpService;
+        _cache = cache;
+        _cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(60))
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
+                    .SetPriority(CacheItemPriority.Normal)
+                    .SetSize(1024);
+        _logger = logger;
         _baseUrl = "https://fantasy.premierleague.com/api/";
     }
 
     public async Task<FantasyData> GetGameData()
     {
-        var result = await _httpService.GetAsync<FantasyData>(new Uri(new Uri(_baseUrl), $"bootstrap-static/"));
-        return result;
+        if (_cache.TryGetValue(GameDataCacheKey, out FantasyData data))
+        {
+            _logger.LogInformation("GameData found in cache.");
+        }
+        else
+        {
+            data = await _httpService.GetAsync<FantasyData>(new Uri(new Uri(_baseUrl), $"bootstrap-static/"));
+            _cache.Set(GameDataCacheKey, data, _cacheEntryOptions);
+        }
+
+        return data;
     }
 
     public async Task<IEnumerable<Fixture>> GetFixtures()
     {
-        var result = await _httpService.GetAsync<IEnumerable<Fixture>>(new Uri(new Uri(_baseUrl), $"fixtures"));
-        return result;
+        if (_cache.TryGetValue(FixturesCacheKey, out IEnumerable<Fixture> data))
+        {
+            _logger.LogInformation("Fixtures found in cache.");
+        }
+        else
+        {
+            data = await _httpService.GetAsync<IEnumerable<Fixture>>(new Uri(new Uri(_baseUrl), $"fixtures"));
+            _cache.Set(FixturesCacheKey, data, _cacheEntryOptions);
+        }
+        return data;
     }
 
     public async Task<IEnumerable<Fixture>> GetFixturesByGameweekNumber(int gameweek)
@@ -68,8 +103,17 @@ public class FantasyApiClient : IFantasyApiClient
             return null;
         }
 
-        var result = await _httpService.GetAsync<ManagerPicksData>(new Uri(new Uri(_baseUrl), $"entry/{managerId}/event/{gameweek}/picks/"));
-        return result;
+        var cacheKey = $"{ManagerCacheBaseKey}_{managerId}_{gameweek}";
+        if (_cache.TryGetValue(cacheKey, out ManagerPicksData data))
+        {
+            _logger.LogInformation("ManagerPicks found in cache.");
+        }
+        else
+        {
+            data = await _httpService.GetAsync<ManagerPicksData>(new Uri(new Uri(_baseUrl), $"entry/{managerId}/event/{gameweek}/picks/"));
+            _cache.Set(cacheKey, data, _cacheEntryOptions);
+        }
+        return data;
     }
 
     public async Task<List<Transfer>> GetTransfersByManagerIdAndGameWeekNumber(int managerId, int gameweek)
